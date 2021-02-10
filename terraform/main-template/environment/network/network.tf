@@ -1,15 +1,15 @@
 provider "aws" {
   version = ">= 3.5.0"
-  region  = "ap-southeast-2"
+  region  = "REGION"
 }
 
 # parameter settings
 locals {
-  pj       = "tf-cicd"
+  pj       = "PJ-NAME"
   vpc_cidr = "10.1.0.0/16"
   tags = {
-    pj     = "tf-cicd"
-    owner = "nobody"
+    pj     = "PJ-NAME"
+    owner = "OWNER"
   }
 
   subnet_public_cidrs  = ["10.1.10.0/24"]

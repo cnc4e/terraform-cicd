@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tf-cicd-tfstate-delivery"
+    bucket         = "PJ-NAME-tfstate-delivery"
     key            = "github-runner/terraform.tfstate"
     encrypt        = true
-    dynamodb_table = "tf-cicd-tfstate-lock-delivery"
-    region         = "ap-southeast-2"
+    dynamodb_table = "PJ-NAME-tfstate-lock-delivery"
+    region         = "REGION"
   }
 }

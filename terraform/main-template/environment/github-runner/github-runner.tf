@@ -4,7 +4,7 @@ terraform {
 
 provider "aws" {
   version = ">= 3.5.0"
-  region  = "ap-southeast-2"
+  region  = "REGION"
 }
 
 # import network value
@@ -12,25 +12,25 @@ data "terraform_remote_state" "network" {
   backend = "s3"
 
   config = {
-    bucket         = "tf-cicd-tfstate-delivery"
+    bucket         = "PJ-NAME-tfstate-delivery"
     key            = "network/terraform.tfstate"
     encrypt        = true
-    dynamodb_table = "tf-cicd-tfstate-lock-delivery"
-    region         = "ap-southeast-2"
+    dynamodb_table = "PJ-NAME-tfstate-lock-delivery"
+    region         = "REGION"
   }
 }
 
 # parameter settings
 locals {
-  pj     = "tf-cicd"
+  pj     = "PJ-NAME"
   vpc_id = data.terraform_remote_state.network.outputs.vpc_id
   tags = {
-    pj     = "tf-cicd"
+    pj     = "PJ-NAME"
     owner = "nobody"
   }
 
-  ec2_github_url             = "https://github.com/nariryo/tf-cicd"
-  ec2_registration_token     = "AKSL7XAY3FV3PO7KKL7ZBXDAENHU4"
+  ec2_github_url             = "GITHUB-URL"
+  ec2_registration_token     = "REGIST_TOKEN"
   ec2_runner_name            = ""
   ec2_runner_tags            = ""
   ec2_subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_ids[0]
