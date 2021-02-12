@@ -16,7 +16,7 @@ locals {
 }
 
 module "network" {
-  source = "../../../modules/environment/network"
+  source = "../../modules/environment/network"
 
   # common parameter
   pj   = local.pj

@@ -45,7 +45,7 @@ locals {
 }
 
 module "github-runner" {
-  source = "../../../modules/environment/github-runner-ec2"
+  source = "../../modules/github-runner-ec2"
 
   # common parameter
   pj     = local.pj

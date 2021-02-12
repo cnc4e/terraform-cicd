@@ -12,10 +12,10 @@ data "terraform_remote_state" "deployed_network" {
   backend = "s3"
 
   config = {
-    bucket         = "PJ-NAME-tfstate-prod"
+    bucket         = "PJ-NAME-tfstate-dev"
     key            = "network/terraform.tfstate"
     encrypt        = true
-    dynamodb_table = "PJ-NAME-tfstate-lock-prod"
+    dynamodb_table = "PJ-NAME-tfstate-lock-dev"
     region         = "REGION"
   }
 }
@@ -30,16 +30,16 @@ locals {
   }
 
   ec2_subnet_id              = data.terraform_remote_state.deployed_network.outputs.private_subnet_ids[0]
-  ec2_instance_type          = "t3.medium"
-  ec2_root_block_volume_size = 30
+  ec2_instance_type          = "t2.micro"
+  ec2_root_block_volume_size = 10
   ec2_key_name               = ""
   
-  sg_ingress_port         = [22, 80, 443]
+  sg_ingress_port         = [0]
   sg_ingress_cidr            = "210.148.59.64/28"
 }
 
 module "deployed_instance" {
-  source = "../../../../modules/deploy/instance"
+  source = "../../../modules/instance"
 
   # common parameter
   pj     = local.pj
