@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket         = "PJ-NAME-tfstate-dev"
-    key            = "network/terraform.tfstate"
+    key            = "deploy/terraform.tfstate"
     encrypt        = true
     dynamodb_table = "PJ-NAME-tfstate-lock-dev"
     region         = "REGION"

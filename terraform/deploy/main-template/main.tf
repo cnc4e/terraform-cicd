@@ -1,35 +1,22 @@
-terraform {
-  required_version = ">= 0.13.2"
-}
-
 provider "aws" {
   version = ">= 3.5.0"
   region  = "REGION"
 }
 
-# import network value
-data "terraform_remote_state" "deployed_network" {
-  backend = "s3"
-
-  config = {
-    bucket         = "PJ-NAME-tfstate-dev"
-    key            = "network/terraform.tfstate"
-    encrypt        = true
-    dynamodb_table = "PJ-NAME-tfstate-lock-dev"
-    region         = "REGION"
-  }
-}
-
 # parameter settings
 locals {
-  pj     = "PJ-NAME"
-  vpc_id = data.terraform_remote_state.deployed_network.outputs.vpc_id
+  pj       = "PJ-NAME"
+  vpc_cidr = "10.2.0.0/16"
+  vpc_id = module.deployed_network.vpc_id
   tags = {
     pj     = "PJ-NAME"
     owner = "OWNER"
   }
 
-  ec2_subnet_id              = data.terraform_remote_state.deployed_network.outputs.private_subnet_ids[0]
+  subnet_public_cidrs  = ["10.2.10.0/24"]
+  subnet_private_cidrs  = ["10.2.20.0/24"]
+
+  ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
   ec2_instance_type          = "t2.micro"
   ec2_root_block_volume_size = 10
   ec2_key_name               = ""
@@ -38,8 +25,22 @@ locals {
   sg_ingress_cidr            = "210.148.59.64/28"
 }
 
+module "deployed_network" {
+  source = "../modules/network"
+
+  # common parameter
+  pj   = local.pj
+  tags = local.tags
+
+  # module parameter
+  vpc_cidr = local.vpc_cidr
+
+  subnet_public_cidrs  = local.subnet_public_cidrs
+  subnet_private_cidrs = local.subnet_private_cidrs
+}
+
 module "deployed_instance" {
-  source = "../../../modules/instance"
+  source = "../modules/instance"
 
   # common parameter
   pj     = local.pj
