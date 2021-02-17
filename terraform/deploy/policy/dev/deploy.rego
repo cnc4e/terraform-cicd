@@ -76,11 +76,11 @@ deny[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_nat_gateway"
-    not count(r) == natgw_count
+    not (r.index + 1) == natgw_count
 
     reason := sprintf(
       "%-40s :: %d natgw is not expected",
-      [r.address, count(r)]
+      [r.address, r.index + 1]
     )
 }
 
@@ -90,11 +90,11 @@ deny[reason] {
     r.mode == "managed"
     r.type == "aws_subnet"
     r.name == "private"
-    not count(r) == subnet_count
+    not (r.index + 1) == subnet_count
 
     reason := sprintf(
       "%-40s :: %d %s subnet is not expected",
-      [r.address, count(r), r.name]
+      [r.address, r.index + 1, r.name]
     )
 }
 
@@ -104,10 +104,10 @@ deny[reason] {
     r.mode == "managed"
     r.type == "aws_subnet"
     r.name == "public"
-    not count(r) == subnet_count
+    not (r.index + 1) == subnet_count
 
     reason := sprintf(
       "%-40s :: %d %s subnet is not expected",
-      [r.address, count(r), r.name]
+      [r.address, r.index + 1, r.name]
     )
 }
