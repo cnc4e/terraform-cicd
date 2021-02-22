@@ -2,7 +2,8 @@ name: terraform-cicd
 on:
   pull_request:
     branches:
-      - BRANCH
+      - dev
+      - prod
     types: [closed]
 jobs:
   deploy:
