@@ -73,7 +73,7 @@ terraform apply
 
 **作成後のイメージ**
 
-![](./images/use-backend.svg)
+![](../images/use-backend.svg)
 
 ### ネットワーク
 
@@ -97,7 +97,7 @@ terraform apply
 
 **作成後のイメージ**
 
-![](./images/use-network.svg)
+![](../images/use-network.svg)
 
 
 ### Githubレポジトリの準備
@@ -171,7 +171,7 @@ terraform apply
 
 **作成後のイメージ**
 
-![](./images/use-runner.svg)
+![](../images/use-runner.svg)
 
 ## サービスデプロイ
 
