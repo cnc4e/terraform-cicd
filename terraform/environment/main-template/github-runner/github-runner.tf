@@ -30,7 +30,7 @@ locals {
   }
 
   ec2_github_url             = "GITHUB-URL"
-  ec2_registration_token     = "REGIST_TOKEN"
+  ec2_registration_token     = "REGIST-TOKEN"
   ec2_runner_name            = ""
   ec2_runner_tags            = ""
   ec2_subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_ids[0]
