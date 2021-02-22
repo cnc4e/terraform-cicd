@@ -1,8 +1,5 @@
 name: terraform-cicd
 on:
-  push:
-    branches:
-      - BRANCH
   pull_request:
     branches:
       - BRANCH
