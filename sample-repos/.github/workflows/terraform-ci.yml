@@ -81,7 +81,6 @@ jobs:
     - name: test
       id: conftest
       uses: instrumenta/conftest-action@master
-      continue-on-error: true
       with:
         files: main-template/deploy.json
         policy: policy/BRANCH/

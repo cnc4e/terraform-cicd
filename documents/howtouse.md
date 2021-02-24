@@ -139,7 +139,7 @@ TerraformのバックエンドとしてS3を使用するため、GithubのSecret
 Github Runnerサーバモジュールのディレクトリへ移動します。
 
 ``` sh
-cd $CLONEDIR/terraform-cicd/terraform/environment/$PJNAME/gitlab-runner
+cd $CLONEDIR/terraform-cicd/terraform/environment/$PJNAME/github-runner
 ```
 
 `github-runner.tf`を編集します。`region`と`locals`配下のパラメータを修正します。とくにec2_github_urlとec2_registration_tokenを`Githubレポジトリの準備`で確認した値に必ず修正してください。
@@ -174,11 +174,11 @@ terraform apply
 
 **作成後のイメージ**
 
-![](../images/use-runner.svg)
+![](../images/use-runner.png)
 
 ## 開発環境へのデプロイ
 
-サービスのデプロイはサービスごとに行います。terraformのコードもサービスごとに作成するため、あらかじめ用意された`deploy`ディレクトリをコピーし、`サービス名`ディレクトリなどの作成がオススメです。以下の手順では`test-app`というサービス名を想定して記載します。
+`sample-repos`ディレクトリをコピーし、ソースをGithubの`dev`ブランチにプッシュします。その後、`feature`ブランチで修正を行いプルリクエストを作成&マージすることでCI/CDが行われます。ここでは`test-app`という名前でディレクトリをコピーします。
 
 ``` sh
 cd $CLONEDIR/terraform-cicd/
@@ -195,7 +195,6 @@ cd $APPNAME
 find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i -e 's:REGION:'$REGION':g'
 find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i -e 's:PJ-NAME:'$PJNAME':g'
 find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i -e 's:OWNER:nobody:g'
-find ./ -type f -exec grep -l 'APP-NAME' {} \; | xargs sed -i -e 's:APP-NAME:'$APPNAME':g'
 ```
 
 **macの場合**
@@ -205,11 +204,10 @@ cd $APPNAME
 find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i "" -e 's:REGION:'$REGION':g'
 find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i "" -e 's:PJ-NAME:'$PJNAME':g'
 find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i "" -e 's:OWNER:nobody:g'
-find ./ -type f -exec grep -l 'APP-NAME' {} \; | xargs sed -i "" -e 's:APP-NAME:'$APPNAME':g'
 ```
 
 ### Githubへのソース配置
-これはterraformを実行する手順ではありません。Githubで実施する手順になります。    
+ここからはterraformを実行する手順ではありません。Githubで実施する手順になります。    
 - `Githubレポジトリの準備`で作成したレポジトリをクローンし、そこにサンプルとなるTerraformコードをコピーします。その後Githubに`dev`ブランチをプッシュします。
 
 ``` sh
@@ -218,21 +216,17 @@ git clone <GithubレポジトリのクローンURL>
 # クローン時にID/パスワードが求められたらGithubのユーザでログイン
 cd $REPOSITORYNAME
 git checkout -b dev
-cp -r $CLONEDIR/terraform-cicd/$APPNAME/* ./
+cp -r $CLONEDIR/terraform-cicd/$APPNAME/. ./
 find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
 git add .
 git commit -m "init"
-git push origin dev:dev
+git push --set-upstream origin dev:dev
 ```
 
 レポジトリルートに`.github/workflows/terraform-ci.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
 また`.github/workflows/terraform-cd.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。  
 
-この際デフォルトブランチ設定と本番環境のためのブランチを作成しておきます。  
-
-レポジトリのデフォルトブランチを`dev`ブランチに変更します。
-- レポジトリトップ画面から[Settings] - [Branches] - [Default Branchの鉛筆マーク]を順にクリックします。
-- デフォルトブランチを`master`から`dev`に変更し、[Rename branch]をクリックしてください。
+この際本番環境のためのブランチを作成しておきます。  
 
 本番環境で使用する`production`ブランチを作成します。  
 - Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
@@ -250,10 +244,10 @@ Githubでプルリクエストを作成し、GithubActionsを動作させてみ�
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME
 git checkout -b feature
-find ./ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
+find ./main-template/ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
 git add .
 git commit -m "change instance type"
-git push origin feature:feature
+git push --set-upstream origin feature:feature 
 ```
 
 Githubでマージ先：`dev`、マージ元：`feature`としてプルリクエストを作成します。
@@ -268,7 +262,7 @@ GithubActionsが動作し、`terraform plan`は成功するもののポリシー
 `feature`ブランチでデプロイ内容の変更を行います。今度はポリシーチェックに成功するように変更します。
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME
-find ./ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
+find ./main-template/ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
 git add .
 git commit -m "change instance type"
 git push
@@ -301,6 +295,11 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 本番環境へのデプロイを行います。本番環境では冗長構成にし、ポリシーもより厳しいものに変更します。  
 `dev`ブランチで修正を行い、`production`ブランチに対してプルリクエストを作成&マージして本番環境へのデプロイを行います。
 
+```sh
+cd $CLONEDIR/$REPOSITORYNAME
+git checkout dev
+```
+
 ### ソース修正
 **main-template/main.tf**  
 デプロイ対象を冗長構成に変更します。`locals`の値を以下のように変更してください。VPCやサブネットの値は個別環境に合わせて読み替えてください。サブネットは2つずつ指定されていれば構いません。  
@@ -309,15 +308,15 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 # parameter settings
 locals {
   pj       = "PJ-NAME"
-  vpc_cidr = "10.2.0.0/16"
+  vpc_cidr = "10.3.0.0/16"
   vpc_id = module.deployed_network.vpc_id
   tags = {
     pj     = "PJ-NAME"
     owner = "OWNER"
   }
 
-  subnet_public_cidrs  = ["10.2.10.0/24", "10.2.11.0/24"]
-  subnet_private_cidrs  = ["10.2.20.0/24", "10.2.21.0/24"]
+  subnet_public_cidrs  = ["10.3.10.0/24", "10.3.11.0/24"]
+  subnet_private_cidrs  = ["10.3.20.0/24", "10.3.21.0/24"]
 
   ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
   ec2_instance_type          = "t2.large"
@@ -396,8 +395,8 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 ### デプロイの削除
 
 ``` sh
-cd $CLONEDIR/$REPOSITORY_NAME/main-template
-git checkout dev
+cd $CLONEDIR/$REPOSITORYNAME/main-template
+terraform init
 terraform destroy
 > yes
 ```
@@ -435,5 +434,5 @@ terraform destroy
 ``` sh
 rm -rf $CLONEDIR/terraform/environment/$PJNAME
 rm -rf $CLONEDIR/terraform-cicd/$APPNAME
-rm -rf $CLONEDIR/$REPOSITORY_NAME
+rm -rf $CLONEDIR/$REPOSITORYNAME
 ```
