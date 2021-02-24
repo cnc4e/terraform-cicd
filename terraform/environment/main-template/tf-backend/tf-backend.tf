@@ -15,7 +15,7 @@ locals {
     owner = "OWNER"
   }
   
-  env_names = ["delivery", "dev", "prod"]
+  env_names = ["delivery", "dev", "production"]
 }
 
 module "tf-backend" {

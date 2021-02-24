@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "PJ-NAME-tfstate-dev"
+    bucket         = "PJ-NAME-tfstate-BRANCH"
     key            = "deploy/terraform.tfstate"
     encrypt        = true
-    dynamodb_table = "PJ-NAME-tfstate-lock-dev"
+    dynamodb_table = "PJ-NAME-tfstate-lock-BRANCH"
     region         = "REGION"
   }
 }
