@@ -78,7 +78,7 @@ terraform apply
 
 **作成後のイメージ**
 
-![](../images/use-backend.svg)
+![](../images/use-backend.png)
 
 ### ネットワーク
 
@@ -102,7 +102,7 @@ terraform apply
 
 **作成後のイメージ**
 
-![](../images/use-network.svg)
+![](../images/use-network.png)
 
 
 ### Githubレポジトリの準備
@@ -288,7 +288,7 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
 ここまでの手順で、CICDパイプラインを通してdevブランチから開発環境にサービスをデプロイすることができました。  
-本番環境へのデプロイも同じように行うことができます。
+![](../images/use-dev.png)  
 
 ## 本番環境へのデプロイ
 
@@ -386,7 +386,8 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
-これで本番環境へのデプロイが完了しました。
+これで本番環境へのデプロイが完了しました。  
+![](../images/use-production.png)  
 
 ## 環境削除
 
