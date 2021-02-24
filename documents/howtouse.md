@@ -393,9 +393,22 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 構築したときの逆の以下モジュール順に`terraform destroy`を実行してください。
 
 ### デプロイの削除
+**本番環境**  
 
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME/main-template
+terraform init
+terraform destroy
+> yes
+```
+
+**開発環境**  
+
+``` sh
+cd $CLONEDIR/$REPOSITORYNAME/main-template
+git log
+# 初回コミットのコミットハッシュを確認
+git reset --hard <コミットハッシュ>
 terraform init
 terraform destroy
 > yes
