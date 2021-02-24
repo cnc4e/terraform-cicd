@@ -7,7 +7,7 @@
   - ネットワーク（任意）
   - Githubレポジトリの準備
   - Github Runner
-- サービスデプロイ
+- 開発環境へのデプロイ
   - Githubへのソース配置
   - プルリクエスト作成/更新
   - プルリクエストマージ
@@ -53,7 +53,8 @@ find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i "" -e 's:OWNER:nobody
 
 ### tfバックエンド
 
-Terraformのtfstateを保存するバックエンドを作成します。
+Terraformのtfstateを保存するバックエンドを作成します。ここでは`delivery`、`dev`、`production`の3つのバックエンドが作成されます。  
+`delivery`以外はレポジトリで使用するブランチ名になります。変更したい場合は`tf-backend.tf`の`env_names`の値を修正してください。  
 
 tfバックエンドモジュールのディレクトリへ移動します。
 
@@ -103,9 +104,11 @@ terraform apply
 ### Githubレポジトリの準備
 Githubにログインし、レポジトリを作成します。なお、Githubへのサインアップは済んでいるものとします。  
 - メニューバー右の[+マーク] - [New repository]をクリックし、新規レポジトリ作成画面に移動します。
-- 新規レポジトリ作成画面では以下を入力し、`Create repository`をクリックしてください。特にVisiblityは必ず`Private`を選択してください。
+- 新規レポジトリ作成画面では以下を入力し、[Create repository]をクリックしてください。特にVisiblityは必ず`Private`を選択してください。
   - レポジトリ名
   - レポジトリのVisiblity Private
+
+レポジトリ名を環境変数として登録しておきます。  
 
 ``` sh
 export REPOSITORYNAME=<レポジトリ名>
@@ -122,7 +125,11 @@ TerraformのバックエンドとしてS3を使用するため、GithubのSecret
 
 レポジトリのデフォルトブランチを`dev`ブランチに変更します。
 - レポジトリトップ画面から[Settings] - [Branches] - [Default Branchの鉛筆マーク]を順にクリックします。
-- デフォルトブランチを`master`から`dev`に変更し、`Rename branch`をクリックしてください。
+- デフォルトブランチを`master`から`dev`に変更し、[Rename branch]をクリックしてください。
+
+本番環境で使用する`production`ブランチを作成します。  
+- Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
+- [Find or create a branch...]に`production`と入力して、[Create branch: production from dev]をクリックします。
 
 セルフホストランナーに与えるトークンを確認します。
 - レポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner] - [Add runner]を順にクリックします。
@@ -173,7 +180,7 @@ terraform apply
 
 ![](../images/use-runner.svg)
 
-## サービスデプロイ
+## 開発環境へのデプロイ
 
 サービスのデプロイはサービスごとに行います。terraformのコードもサービスごとに作成するため、あらかじめ用意された`deploy`ディレクトリをコピーし、`サービス名`ディレクトリなどの作成がオススメです。以下の手順では`test-app`というサービス名を想定して記載します。
 
@@ -207,20 +214,22 @@ find ./ -type f -exec grep -l 'APP-NAME' {} \; | xargs sed -i "" -e 's:APP-NAME:
 
 ### Githubへのソース配置
 これはterraformを実行する手順ではありません。Githubで実施する手順になります。    
-- `Githubレポジトリの準備`で作成したレポジトリをクローンし、そこにサンプルとなるTerraformコードをコピーします。その後GitLab-flowを参考に、Githubにdevブランチをプッシュします。
+- `Githubレポジトリの準備`で作成したレポジトリをクローンし、そこにサンプルとなるTerraformコードをコピーします。その後Githubに`dev`ブランチをプッシュします。
 
-  ``` sh
-  cd $CLONEDIR
-  git clone <GithubレポジトリのクローンURL>
-  # クローン時にID/パスワードが求められたらGithubのユーザでログイン
-  cd $REPOSITORYNAME
-  cp -r $CLONEDIR/terraform-cicd/$APPNAME/* ./
-  git add .
-  git commit -m "init"
-  git push 
-  ```
+``` sh
+cd $CLONEDIR
+git clone <GithubレポジトリのクローンURL>
+# クローン時にID/パスワードが求められたらGithubのユーザでログイン
+cd $REPOSITORYNAME
+cp -r $CLONEDIR/terraform-cicd/$APPNAME/* ./
+find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
+git add .
+git commit -m "init"
+git push 
+```
 
-レポジトリルートに`.github/workflows/terraform-ci.yml`とTerraformコードが配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
+レポジトリルートに`.github/workflows/terraform-ci.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
+また`.github/workflows/terraform-cd.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。
 
 ### プルリクエスト作成/更新
 Githubでプルリクエストを作成し、GithubActionsを動作させてみます。プルリクエスト作成/更新時は以下が実行されます。
@@ -231,14 +240,14 @@ Githubでプルリクエストを作成し、GithubActionsを動作させてみ�
 - ポリシーチェックの結果をプルリクエストのコメントへ転記
 
 マージ元となる`feature`ブランチを作成し、デプロイ内容の変更を行います。なお、最初はポリシーチェックに失敗するように変更します。
-  ``` sh
-  cd $CLONEDIR/$REPOSITORYNAME
-  git checkout -b feature
-  find ./ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
-  git add .
-  git commit -m "change instance type"
-  git push origin feature:feature
-  ```
+``` sh
+cd $CLONEDIR/$REPOSITORYNAME
+git checkout -b feature
+find ./ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
+git add .
+git commit -m "change instance type"
+git push origin feature:feature
+```
 
 Githubでマージ先：`dev`、マージ元：`feature`としてプルリクエストを作成します。
 - Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
@@ -250,13 +259,13 @@ GithubActionsが動作し、`terraform plan`は成功するもののポリシー
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
 
 `feature`ブランチでデプロイ内容の変更を行います。今度はポリシーチェックに成功するように変更します。
-  ``` sh
-  cd $CLONEDIR/$REPOSITORYNAME
-  find ./ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
-  git add .
-  git commit -m "change instance type"
-  git push
-  ```
+``` sh
+cd $CLONEDIR/$REPOSITORYNAME
+find ./ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
+git add .
+git commit -m "change instance type"
+git push
+```
 
 GithubActionsが動作し、`terraform plan`とポリシーチェックに成功しているのを確認します。
 - Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
@@ -269,7 +278,7 @@ GithubActionsが動作し、`terraform plan`とポリシーチェックに成功
 - `terraform apply`
 - `terraform apply`の結果をプルリクエストのコメントへ転記
 
-プルリクエストにコメントされた`terraform plan`とポリシーチェックの内容で相違なければ、featureブランチをマージします。
+プルリクエストにコメントされた`terraform plan`とポリシーチェックの内容で相違なければ、`feature`ブランチをマージします。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
 
 GithubActionsが動作し、`terraform apply`に成功しているのを確認します。
@@ -277,18 +286,107 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
-ここまでの手順で、CICDパイプラインを通してdevブランチから開発環境にサービスをデプロイすることができています。
+ここまでの手順で、CICDパイプラインを通してdevブランチから開発環境にサービスをデプロイすることができました。  
 本番環境へのデプロイも同じように行うことができます。
 
-## サービスの追加
+## 本番環境へのデプロイ
 
-サービスを追加したい場合、[サービスデプロイ](#サービスデプロイ)の手順を繰り返します。この時、APPNAMEは必ず変えるようにしてください。
+本番環境へのデプロイを行います。本番環境では冗長構成にし、ポリシーもより厳しいものに変更します。  
+`dev`ブランチで修正を行い、`production`ブランチに対してプルリクエストを作成&マージして本番環境へのデプロイを行います。
+
+### ソース修正
+**main-template/main.tf**  
+デプロイ対象を冗長構成に変更します。`locals`の値を以下のように変更してください。VPCやサブネットの値は個別環境に合わせて読み替えてください。サブネットは2つずつ指定されていれば構いません。  
+
+```
+# parameter settings
+locals {
+  pj       = "PJ-NAME"
+  vpc_cidr = "10.2.0.0/16"
+  vpc_id = module.deployed_network.vpc_id
+  tags = {
+    pj     = "PJ-NAME"
+    owner = "OWNER"
+  }
+
+  subnet_public_cidrs  = ["10.2.10.0/24", "10.2.11.0/24"]
+  subnet_private_cidrs  = ["10.2.20.0/24", "10.2.21.0/24"]
+
+  ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
+  ec2_instance_type          = "t2.large"
+  ec2_root_block_volume_size = 20
+  ec2_key_name               = ""
+  
+  sg_ingress_port         = [22, 80, 443]
+  sg_ingress_cidr            = "210.148.59.64/28"
+}
+```
+
+**main-template/versions.tf**  
+バックエンドを本番環境のものに変更します。`PJ-NAME`、`REGION`の値は個別環境に合わせて読み替えてください。現在`dev`と指定している値を`production`に変更します。  
+
+```
+backend "s3" {
+    bucket         = "PJ-NAME-tfstate-production"
+    key            = "deploy/terraform.tfstate"
+    encrypt        = true
+    dynamodb_table = "PJ-NAME-tfstate-lock-production"
+    region         = "REGION"
+  }
+```
+
+**policy/deploy.rego**  
+冗長構成に合わせてポリシーを変更します。`# Parameters`の値を以下のように変更してください。  
+
+```
+# Parameters
+ec2_instance_type = "t2.large"
+ec2_root_block_volume_size = 20
+sg_ingress_port = [22, 80, 443]
+sg_ingress_cidr = "210.148.59.64/28"
+subnet_count = 2
+natgw_count = 2
+```
+
+修正したソースを`dev`ブランチにプッシュします。  
+``` sh
+cd $CLONEDIR/$REPOSITORYNAME
+git add .
+git commit -m "change for production"
+git push
+```
+
+### プルリクエスト作成/更新
+開発環境と同じようにGithubでプルリクエストを作成し、GithubActionsを動作させてみます。  
+
+Githubでマージ先：`production`、マージ元：`dev`としてプルリクエストを作成します。
+- Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
+- `base: production`、`compare: dev`を指定し、[Create pull request]をクリックします。
+
+GithubActionsが動作し、`terraform plan`とポリシーチェックに成功しているのを確認します。
+- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- 先ほど作成したプルリクエスト名でActionsが動作し、`terraform plan`とポリシーチェックに成功しています。動作していない場合はしばらく待ってみてください。
+- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
+
+### プルリクエストマージ
+  
+開発環境と同じようにプルリクエストをマージし、GithubActionsを動作させてみます。
+
+プルリクエストにコメントされた`terraform plan`とポリシーチェックの内容で相違なければ、`dev`ブランチをマージします。
+- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
+
+GithubActionsが動作し、`terraform apply`に成功しているのを確認します。
+- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
+- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
+
+これで本番環境へのデプロイが完了しました。
 
 ## 環境削除
 
 構築したときの逆の以下モジュール順に`terraform destroy`を実行してください。
 
-### サービスデプロイの削除
+### デプロイの削除
 
 ``` sh
 cd $CLONEDIR/$REPOSITORY_NAME/main-template
