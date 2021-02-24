@@ -19,7 +19,7 @@ locals {
 }
 
 module "tf-backend" {
-  source = "../../modules/environment/tf-backend"
+  source = "../../modules/tf-backend"
   
   pj  = local.pj
   tags = local.tags

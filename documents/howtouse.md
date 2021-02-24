@@ -127,14 +127,6 @@ TerraformのバックエンドとしてS3を使用するため、GithubのSecret
 |AWS_ACCESS_KEY_ID|バックエンドを作成したユーザのAWSアクセスキー|
 |AWS_SECRET_ACCESS_KEY|バックエンドを作成したユーザのAWSシークレットキー|
 
-レポジトリのデフォルトブランチを`dev`ブランチに変更します。
-- レポジトリトップ画面から[Settings] - [Branches] - [Default Branchの鉛筆マーク]を順にクリックします。
-- デフォルトブランチを`master`から`dev`に変更し、[Rename branch]をクリックしてください。
-
-本番環境で使用する`production`ブランチを作成します。  
-- Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
-- [Find or create a branch...]に`production`と入力して、[Create branch: production from dev]をクリックします。
-
 セルフホストランナーに与えるトークンを確認します。
 - レポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner] - [Add runner]を順にクリックします。
 - [Configure]コードブロック内で以下のようなコマンドを探します。
@@ -225,15 +217,26 @@ cd $CLONEDIR
 git clone <GithubレポジトリのクローンURL>
 # クローン時にID/パスワードが求められたらGithubのユーザでログイン
 cd $REPOSITORYNAME
+git checkout -b dev
 cp -r $CLONEDIR/terraform-cicd/$APPNAME/* ./
 find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
 git add .
 git commit -m "init"
-git push 
+git push origin dev:dev
 ```
 
 レポジトリルートに`.github/workflows/terraform-ci.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
-また`.github/workflows/terraform-cd.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。
+また`.github/workflows/terraform-cd.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。  
+
+この際デフォルトブランチ設定と本番環境のためのブランチを作成しておきます。  
+
+レポジトリのデフォルトブランチを`dev`ブランチに変更します。
+- レポジトリトップ画面から[Settings] - [Branches] - [Default Branchの鉛筆マーク]を順にクリックします。
+- デフォルトブランチを`master`から`dev`に変更し、[Rename branch]をクリックしてください。
+
+本番環境で使用する`production`ブランチを作成します。  
+- Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
+- [Find or create a branch...]に`production`と入力して、[Create branch: production from dev]をクリックします。
 
 ### プルリクエスト作成/更新
 Githubでプルリクエストを作成し、GithubActionsを動作させてみます。プルリクエスト作成/更新時は以下が実行されます。
