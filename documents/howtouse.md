@@ -186,29 +186,11 @@ export APPNAME=test-app
 cp -r sample-repos $APPNAME
 ```
 
-また、すべてのモジュールで共通して設定する値はsedで置換しておくと後の手順が楽です。
-
-**Linuxの場合**
-
-``` sh
-cd $APPNAME
-find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i -e 's:REGION:'$REGION':g'
-find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i -e 's:PJ-NAME:'$PJNAME':g'
-find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i -e 's:OWNER:nobody:g'
-```
-
-**macの場合**
-
-``` sh
-cd $APPNAME
-find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i "" -e 's:REGION:'$REGION':g'
-find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i "" -e 's:PJ-NAME:'$PJNAME':g'
-find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i "" -e 's:OWNER:nobody:g'
-```
+また、
 
 ### Githubへのソース配置
 ここからはterraformを実行する手順ではありません。Githubで実施する手順になります。    
-- `Githubレポジトリの準備`で作成したレポジトリをクローンし、そこにサンプルとなるTerraformコードをコピーします。その後Githubに`dev`ブランチをプッシュします。
+- `Githubレポジトリの準備`で作成したレポジトリをクローンし、`dev`ブランチに切り替え、そこにサンプルとなるTerraformコードをコピーします。
 
 ``` sh
 cd $CLONEDIR
@@ -217,7 +199,30 @@ git clone <GithubレポジトリのクローンURL>
 cd $REPOSITORYNAME
 git checkout -b dev
 cp -r $CLONEDIR/terraform-cicd/$APPNAME/. ./
+```
+
+- モジュールやCICDに使用するワークフローで設定する値を置換します。
+
+**Linuxの場合**
+
+``` sh
+find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i -e 's:REGION:'$REGION':g'
+find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i -e 's:PJ-NAME:'$PJNAME':g'
+find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i -e 's:OWNER:nobody:g'
 find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
+```
+
+**macの場合**
+
+``` sh
+find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i "" -e 's:REGION:'$REGION':g'
+find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i "" -e 's:PJ-NAME:'$PJNAME':g'
+find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i "" -e 's:OWNER:nobody:g'
+find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
+```
+
+- Githubに`dev`ブランチをプッシュします。
+```
 git add .
 git commit -m "init"
 git push --set-upstream origin dev:dev
@@ -447,6 +452,5 @@ terraform destroy
 
 ``` sh
 rm -rf $CLONEDIR/terraform/environment/$PJNAME
-rm -rf $CLONEDIR/terraform-cicd/$APPNAME
 rm -rf $CLONEDIR/$REPOSITORYNAME
 ```
