@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize]
 jobs:
-  deploy:
+  tfplan:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -84,11 +84,12 @@ jobs:
       with:
         files: main-template/deploy.json
         policy: policy
+      continue-on-error: true
           
     - uses: actions/github-script@0.9.0
       if: github.event_name == 'pull_request'
       env:
-        RESULT: "conftest\n${{ steps.conftest.outputs.result }}"
+        RESULT: "conftest\n${{ steps.conftest.outputs.result }}\n"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -108,3 +109,9 @@ jobs:
             repo: context.repo.repo,
             body: output
           })
+          
+    - name: exit-on-failure
+      if: steps.conftest.outcome == 'failure'
+      run: |
+        echo "policy check failure"
+        exit 1
