@@ -80,20 +80,19 @@ jobs:
 
     - name: test
       id: conftest
-      uses: instrumenta/conftest-action@master
+      uses: b4b4r07/action-conftest@master
       with:
         files: main-template/deploy.json
-        policy: policy/BRANCH/
-        namespace: terraform
+        policy: policy
           
     - uses: actions/github-script@0.9.0
       if: github.event_name == 'pull_request'
       env:
-        RESULT: "terraform\n${{ steps.conftest.outputs.stdout }}"
+        RESULT: "conftest\n${{ steps.conftest.outputs.result }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const output = `#### Conftest Result\'
+          const output = `#### Conftest Result\`${{ steps.conftest.outcome }}\`
           
           <details><summary>Show Result</summary>
           
@@ -101,7 +100,7 @@ jobs:
           
           </details>
           
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`policy/BRANCH/\`, Workflow: \`${{ github.workflow }}\`*`;
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`policy/\`, Workflow: \`${{ github.workflow }}\`*`;
             
           github.issues.createComment({
             issue_number: context.issue.number,
