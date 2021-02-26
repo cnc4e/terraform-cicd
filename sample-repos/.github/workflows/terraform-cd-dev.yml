@@ -36,7 +36,7 @@ jobs:
         script: |
           const output = `#### Terraform Apply\`${{ steps.apply.outcome }}\`
           
-          <details><summary>Show Plan</summary>
+          <details><summary>Show Result</summary>
           
           \`\`\`${process.env.APPLY}\`\`\`
           

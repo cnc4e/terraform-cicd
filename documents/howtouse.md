@@ -181,7 +181,7 @@ terraform apply
 `sample-repos`ディレクトリをコピーし、ソースをGithubの`dev`ブランチにプッシュします。その後、`feature`ブランチで修正を行いプルリクエストを作成&マージすることでCI/CDが行われます。
 
 ### Githubへのソース配置
-ここからはterraformを実行する手順ではありません。Githubで実施する手順になります。    
+ここからはterraformを実行する手順ではありません。Githubやターミナルで実施する手順になります。    
 - `Githubレポジトリの準備`で作成したレポジトリをクローンし、`dev`ブランチに切り替え、そこにサンプルとなるTerraformコードをコピーします。
 
 ``` sh
@@ -239,7 +239,7 @@ Githubでプルリクエストを作成し、GithubActionsを動作させてみ�
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME
 git checkout -b feature
-find ./main-template/dev/ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
+sed -i -e 's:t2.micro:t2.large:g' main-template/dev/main.tf 
 git add .
 git commit -m "change instance type"
 git push --set-upstream origin feature:feature 
@@ -257,7 +257,7 @@ GithubActionsが動作し、`terraform plan`は成功するもののポリシー
 `feature`ブランチでデプロイ内容の変更を行います。今度はポリシーチェックに成功するように変更します。
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME
-find ./main-template/dev/ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
+sed -i -e 's:t2.large:t2.micro:g' main-template/dev/main.tf 
 git add .
 git commit -m "change instance type"
 git push
@@ -288,11 +288,12 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 ## 本番環境へのデプロイ
 
 本番環境へのデプロイを行います。本番環境では冗長構成にし、ポリシーもより厳しいものを使用します。  
-`dev`ブランチで修正を行い、`production`ブランチに対してプルリクエストを作成&マージして本番環境へのデプロイを行います。
+`dev`ブランチで修正を行い、`production`ブランチに対してプルリクエストを作成&マージして本番環境へのデプロイを行います。  
 
 ```sh
 cd $CLONEDIR/$REPOSITORYNAME
 git checkout dev
+git pull
 ```
 
 ### ソース確認
