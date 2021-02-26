@@ -10,11 +10,7 @@ sg_ingress_cidr = "210.148.59.64/28"
 subnet_count = 2
 natgw_count = 2
 
-# 配列対要素の比較
-array_contains(arr, elem) {
-  arr[_] = elem
-}
- 
+
 # ec2_instance_type
 violation_ec2_instance_type[reason] {
     r := tfplan.resource_changes[_]
@@ -28,8 +24,8 @@ violation_ec2_instance_type[reason] {
     )
 }
 
-# ec2_root_block_volume_size
-deny[reason] {
+# 
+violation_ec2_root_block_volume_size[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_instance"
@@ -43,7 +39,7 @@ deny[reason] {
 }
 
 # sg_ingress_port
-deny[reason] {
+violation_sg_ingress_port[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_security_group_rule"
@@ -58,7 +54,7 @@ deny[reason] {
 }
 
 # sg_ingress_cidr
-deny[reason] {
+violation_sg_ingress_cidr[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_security_group_rule"
@@ -72,42 +68,73 @@ deny[reason] {
 }
 
 # is_redundant_natgw
-deny[reason] {
+violation_redundant_natgw[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_nat_gateway"
-    not (r.index + 1) == natgw_count
-
+    resource_count := (max(flatten_natgw) + 1)
+    not resource_count == natgw_count
+    
     reason := sprintf(
       "%-40s :: %d natgw is not expected",
-      [r.address, r.index + 1]
+      [r.address, resource_count]
     )
 }
 
 # is_redundant_subnet
-deny[reason] {
+violation_redundant_subnet_private[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_subnet"
     r.name == "private"
-    not (r.index + 1) == subnet_count
+    resource_count := (max(flatten_subnet_private) + 1)
+    not resource_count == subnet_count
 
     reason := sprintf(
       "%-40s :: %d %s subnet is not expected",
-      [r.address, r.index + 1, r.name]
+      [r.address, resource_count, r.name]
     )
 }
 
 # is_redundant_subnet
-deny[reason] {
+violation_redundant_subnet_public[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_subnet"
     r.name == "public"
-    not (r.index + 1) == subnet_count
+    resource_count := (max(flatten_subnet_public) + 1)
+    not resource_count == subnet_count
 
     reason := sprintf(
       "%-40s :: %d %s subnet is not expected",
-      [r.address, r.index + 1, r.name]
+      [r.address, resource_count, r.name]
     )
+}
+
+# support functions
+array_contains(arr, elem) {
+  arr[_] = elem
+}
+
+flatten_natgw[set] {
+    r := tfplan.resource_changes[_]
+    r.mode == "managed"
+    r.type == "aws_nat_gateway"
+	  set := r.index
+}
+
+flatten_subnet_private[set] {
+    r := tfplan.resource_changes[_]
+    r.mode == "managed"
+    r.type == "aws_subnet"
+    r.name == "private"
+	  set := r.index
+}
+
+flatten_subnet_public[set] {
+    r := tfplan.resource_changes[_]
+    r.mode == "managed"
+    r.type == "aws_subnet"
+    r.name == "public"
+	  set := r.index
 }
