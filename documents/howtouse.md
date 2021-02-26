@@ -12,7 +12,7 @@
   - プルリクエスト作成/更新
   - プルリクエストマージ
 - 本番環境へのデプロイ
-  - ソース修正
+  - ソース確認
   - プルリクエスト作成
   - プルリクエストマージ
 
@@ -227,11 +227,11 @@ git push --set-upstream origin dev:dev
 
 ### プルリクエスト作成/更新
 Githubでプルリクエストを作成し、GithubActionsを動作させてみます。プルリクエスト作成/更新時は以下が実行されます。
-- `terraform fmt`
-- `terraform plan`
-- `terraform plan`の結果をプルリクエストのコメントへ転記
-- ポリシーチェックを実施
-- ポリシーチェックの結果をプルリクエストのコメントへ転記
+- **`terraform fmt`**
+- **`terraform plan`**
+- **`terraform plan`の結果をプルリクエストのコメントへ転記**
+- **ポリシーチェックを実施**
+- **ポリシーチェックの結果をプルリクエストのコメントへ転記**
 
 なお、ポリシーチェックで使用するコードは`policy/`配下にあります。
 
@@ -271,8 +271,8 @@ GithubActionsが動作し、`terraform plan`とポリシーチェックに成功
 ### プルリクエストマージ
   
 プルリクエストをマージし、GithubActionsを動作させてみます。プルリクエストマージ時は以下が実行されます。
-- `terraform apply`
-- `terraform apply`の結果をプルリクエストのコメントへ転記
+- **`terraform apply`**
+- **`terraform apply`の結果をプルリクエストのコメントへ転記**
 
 プルリクエストにコメントされた`terraform plan`とポリシーチェックの内容で相違なければ、`feature`ブランチをマージします。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
