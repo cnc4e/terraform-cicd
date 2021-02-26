@@ -178,15 +178,7 @@ terraform apply
 
 ## 開発環境へのデプロイ
 
-`sample-repos`ディレクトリをコピーし、ソースをGithubの`dev`ブランチにプッシュします。その後、`feature`ブランチで修正を行いプルリクエストを作成&マージすることでCI/CDが行われます。ここでは`test-app`という名前でディレクトリをコピーします。
-
-``` sh
-cd $CLONEDIR/terraform-cicd/
-export APPNAME=test-app
-cp -r sample-repos $APPNAME
-```
-
-また、
+`sample-repos`ディレクトリをコピーし、ソースをGithubの`dev`ブランチにプッシュします。その後、`feature`ブランチで修正を行いプルリクエストを作成&マージすることでCI/CDが行われます。
 
 ### Githubへのソース配置
 ここからはterraformを実行する手順ではありません。Githubで実施する手順になります。    
@@ -198,7 +190,7 @@ git clone <GithubレポジトリのクローンURL>
 # クローン時にID/パスワードが求められたらGithubのユーザでログイン
 cd $REPOSITORYNAME
 git checkout -b dev
-cp -r $CLONEDIR/terraform-cicd/$APPNAME/. ./
+cp -r $CLONEDIR/terraform-cicd/sample-repos/. ./
 ```
 
 - モジュールやCICDに使用するワークフローで設定する値を置換します。
@@ -209,7 +201,6 @@ cp -r $CLONEDIR/terraform-cicd/$APPNAME/. ./
 find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i -e 's:REGION:'$REGION':g'
 find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i -e 's:PJ-NAME:'$PJNAME':g'
 find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i -e 's:OWNER:nobody:g'
-find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
 ```
 
 **macの場合**
@@ -218,7 +209,6 @@ find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:
 find ./ -type f -exec grep -l 'REGION' {} \; | xargs sed -i "" -e 's:REGION:'$REGION':g'
 find ./ -type f -exec grep -l 'PJ-NAME' {} \; | xargs sed -i "" -e 's:PJ-NAME:'$PJNAME':g'
 find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i "" -e 's:OWNER:nobody:g'
-find ./ -type f -exec grep -l 'BRANCH' {} \; | xargs sed -i "" -e 's:BRANCH:dev:g'
 ```
 
 - Githubに`dev`ブランチをプッシュします。
@@ -228,12 +218,10 @@ git commit -m "init"
 git push --set-upstream origin dev:dev
 ```
 
-レポジトリルートに`.github/workflows/terraform-ci.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
-また`.github/workflows/terraform-cd.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。  
+レポジトリルートに`.github/workflows/terraform-ci-dev.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
+また`.github/workflows/terraform-cd-dev.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。  
 
-この際本番環境のためのブランチを作成しておきます。  
-
-本番環境で使用する`production`ブランチを作成します。  
+この際本番環境のための`production`ブランチを作成しておきます。  
 - Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
 - [Find or create a branch...]に`production`と入力して、[Create branch: production from dev]をクリックします。
 
@@ -245,11 +233,13 @@ Githubでプルリクエストを作成し、GithubActionsを動作させてみ�
 - ポリシーチェックを実施
 - ポリシーチェックの結果をプルリクエストのコメントへ転記
 
+なお、ポリシーチェックで使用するコードは`policy/`配下にあります。
+
 マージ元となる`feature`ブランチを作成し、デプロイ内容の変更を行います。なお、最初はポリシーチェックに失敗するように変更します。
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME
 git checkout -b feature
-find ./main-template/ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
+find ./main-template/dev/ -type f -exec grep -l 't2.micro' {} \; | xargs sed -i "" -e 's:t2.micro:t2.large:g'
 git add .
 git commit -m "change instance type"
 git push --set-upstream origin feature:feature 
@@ -267,7 +257,7 @@ GithubActionsが動作し、`terraform plan`は成功するもののポリシー
 `feature`ブランチでデプロイ内容の変更を行います。今度はポリシーチェックに成功するように変更します。
 ``` sh
 cd $CLONEDIR/$REPOSITORYNAME
-find ./main-template/ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
+find ./main-template/dev/ -type f -exec grep -l 't2.large' {} \; | xargs sed -i "" -e 's:t2.large:t2.micro:g'
 git add .
 git commit -m "change instance type"
 git push
@@ -292,12 +282,12 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
-ここまでの手順で、CICDパイプラインを通してdevブランチから開発環境にサービスをデプロイすることができました。  
+ここまでの手順で、CICDパイプラインを通して`dev`ブランチから開発環境にサービスをデプロイすることができました。  
 ![](../images/use-dev.png)  
 
 ## 本番環境へのデプロイ
 
-本番環境へのデプロイを行います。本番環境では冗長構成にし、ポリシーもより厳しいものに変更します。  
+本番環境へのデプロイを行います。本番環境では冗長構成にし、ポリシーもより厳しいものを使用します。  
 `dev`ブランチで修正を行い、`production`ブランチに対してプルリクエストを作成&マージして本番環境へのデプロイを行います。
 
 ```sh
@@ -305,36 +295,36 @@ cd $CLONEDIR/$REPOSITORYNAME
 git checkout dev
 ```
 
-### ソース修正
-**main-template/main.tf**  
-デプロイ対象を冗長構成に変更します。`locals`の値を以下のように変更してください。VPCやサブネットの値は個別環境に合わせて読み替えてください。サブネットは2つずつ指定されていれば構いません。  
+### ソース確認
+**main-template/production/main.tf**  
+デプロイ対象が冗長構成であることを確認します。VPCやサブネットの値は個別環境に合わせて読み替えてください。サブネットは2つずつ指定されていれば構いません。  
 
 ```
 # parameter settings
 locals {
   pj       = "PJ-NAME"
   vpc_cidr = "10.3.0.0/16"
-  vpc_id = module.deployed_network.vpc_id
+  vpc_id   = module.deployed_network.vpc_id
   tags = {
-    pj     = "PJ-NAME"
+    pj    = "PJ-NAME"
     owner = "OWNER"
   }
 
   subnet_public_cidrs  = ["10.3.10.0/24", "10.3.11.0/24"]
-  subnet_private_cidrs  = ["10.3.20.0/24", "10.3.21.0/24"]
+  subnet_private_cidrs = ["10.3.20.0/24", "10.3.21.0/24"]
 
   ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
   ec2_instance_type          = "t2.large"
-  ec2_root_block_volume_size = 20
+  ec2_root_block_volume_size = 30
   ec2_key_name               = ""
-  
-  sg_ingress_port         = [22, 80, 443]
-  sg_ingress_cidr            = "210.148.59.64/28"
+
+  sg_ingress_port = [22, 80, 443]
+  sg_ingress_cidr = "210.148.59.64/28"
 }
 ```
 
-**main-template/versions.tf**  
-バックエンドを本番環境のものに変更します。`PJ-NAME`、`REGION`の値は個別環境に合わせて読み替えてください。現在`dev`と指定している値を`production`に変更します。  
+**main-template/production/versions.tf**  
+バックエンドが本番環境のものであることを確認します。`PJ-NAME`、`REGION`の値は個別環境に合わせて読み替えてください。開発環境では`dev`と指定している値が`production`に変更されています。  
 
 ```
 backend "s3" {
@@ -346,8 +336,8 @@ backend "s3" {
   }
 ```
 
-**policy/deploy.rego**  
-冗長構成に合わせてポリシーを変更します。`# Parameters`の値を以下のように変更してください。  
+**policy/production/deploy.rego**  
+冗長構成に合わせたポリシーであることを確認します。  
 
 ```
 # Parameters
@@ -357,14 +347,6 @@ sg_ingress_port = [22, 80, 443]
 sg_ingress_cidr = "210.148.59.64/28"
 subnet_count = 2
 natgw_count = 2
-```
-
-修正したソースを`dev`ブランチにプッシュします。  
-``` sh
-cd $CLONEDIR/$REPOSITORYNAME
-git add .
-git commit -m "change for production"
-git push
 ```
 
 ### プルリクエスト作成
@@ -402,7 +384,7 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 **本番環境**  
 
 ``` sh
-cd $CLONEDIR/$REPOSITORYNAME/main-template
+cd $CLONEDIR/$REPOSITORYNAME/main-template/production
 terraform init
 terraform destroy
 > yes
@@ -411,10 +393,7 @@ terraform destroy
 **開発環境**  
 
 ``` sh
-cd $CLONEDIR/$REPOSITORYNAME/main-template
-git log
-# 初回コミットのコミットハッシュを確認
-git reset --hard <コミットハッシュ>
+cd $CLONEDIR/$REPOSITORYNAME/main-template/dev
 terraform init
 terraform destroy
 > yes
