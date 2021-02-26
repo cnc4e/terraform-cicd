@@ -5,27 +5,27 @@ provider "aws" {
 # parameter settings
 locals {
   pj       = "PJ-NAME"
-  vpc_cidr = "10.2.0.0/16"
+  vpc_cidr = "10.3.0.0/16"
   vpc_id   = module.deployed_network.vpc_id
   tags = {
     pj    = "PJ-NAME"
     owner = "OWNER"
   }
 
-  subnet_public_cidrs  = ["10.2.10.0/24"]
-  subnet_private_cidrs = ["10.2.20.0/24"]
+  subnet_public_cidrs  = ["10.3.10.0/24", "10.3.11.0/24"]
+  subnet_private_cidrs = ["10.3.20.0/24", "10.3.21.0/24"]
 
   ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
-  ec2_instance_type          = "t2.micro"
-  ec2_root_block_volume_size = 10
+  ec2_instance_type          = "t2.large"
+  ec2_root_block_volume_size = 30
   ec2_key_name               = ""
 
-  sg_ingress_port = [0]
+  sg_ingress_port = [22, 80, 443]
   sg_ingress_cidr = "210.148.59.64/28"
 }
 
 module "deployed_network" {
-  source = "../modules/network"
+  source = "../../modules/network"
 
   # common parameter
   pj   = local.pj
@@ -39,7 +39,7 @@ module "deployed_network" {
 }
 
 module "deployed_instance" {
-  source = "../modules/instance"
+  source = "../../modules/instance"
 
   # common parameter
   pj     = local.pj

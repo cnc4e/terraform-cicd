@@ -1,13 +1,15 @@
-name: terraform-cicd
+name: terraform-ci-dev
 on:
   pull_request:
+    branches:
+    - dev
     types: [opened, synchronize]
 jobs:
   tfplan:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: main-template/
+        working-directory: main-template/dev/
     steps:
     - uses: actions/checkout@v2
     - uses: hashicorp/setup-terraform@v1
@@ -53,7 +55,7 @@ jobs:
           
           </details>
           
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`main-template/\`, Workflow: \`${{ github.workflow }}\`*`;
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`main-template/dev/\`, Workflow: \`${{ github.workflow }}\`*`;
             
           github.issues.createComment({
             issue_number: context.issue.number,
@@ -73,7 +75,7 @@ jobs:
         aws-region: REGION
     - name: Terraform plan
       run: |
-        cd main-template
+        cd main-template/dev
         terraform init
         terraform plan -out deploy.tfplan -lock=false
         terraform show -json deploy.tfplan > deploy.json
@@ -82,8 +84,8 @@ jobs:
       id: conftest
       uses: b4b4r07/action-conftest@master
       with:
-        files: main-template/deploy.json
-        policy: policy
+        files: main-template/dev/deploy.json
+        policy: policy/dev
       continue-on-error: true
           
     - uses: actions/github-script@0.9.0
@@ -101,7 +103,7 @@ jobs:
           
           </details>
           
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`policy/\`, Workflow: \`${{ github.workflow }}\`*`;
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`main-template/dev/\`, Workflow: \`${{ github.workflow }}\`*`;
             
           github.issues.createComment({
             issue_number: context.issue.number,

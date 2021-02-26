@@ -1,0 +1,52 @@
+name: terraform-cd-production
+on:
+  pull_request:
+    branches:
+    - production
+    types: [closed]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: main-template/production/
+    steps:
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v1
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: REGION
+    
+    - name: Terraform init
+      id: init
+      run: terraform init
+      
+    - name: Terraform apply
+      id: apply
+      run: terraform apply -auto-approve -lock=false -no-color
+      
+    - uses: actions/github-script@0.9.0
+      if: github.event_name == 'pull_request'
+      env:
+        APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Apply\`${{ steps.apply.outcome }}\`
+          
+          <details><summary>Show Plan</summary>
+          
+          \`\`\`${process.env.APPLY}\`\`\`
+          
+          </details>
+          
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`main-template/production/\`, Workflow: \`${{ github.workflow }}\`*`;
+            
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
