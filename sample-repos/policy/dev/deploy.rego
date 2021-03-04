@@ -3,12 +3,12 @@ package main
 import input as tfplan
  
 # Parameters
-ec2_instance_type = "t2.micro"
-ec2_root_block_volume_size = 10
-sg_ingress_port = [0]
-sg_ingress_cidr = "210.148.59.64/28"
-subnet_count = 1
-natgw_count = 1
+ec2_instance_type := "t2.micro"
+ec2_root_block_volume_size := 10
+sg_ingress_port := [0]
+sg_ingress_cidr := "210.148.59.64/28"
+subnet_count := 1
+natgw_count := 1
 
 
 # ec2_instance_type
@@ -29,7 +29,7 @@ violation_ec2_root_block_volume_size[reason] {
     r := tfplan.resource_changes[_]
     r.mode == "managed"
     r.type == "aws_instance"
-    root_block_device = r.change.after.root_block_device[_]
+    root_block_device := r.change.after.root_block_device[_]
     not root_block_device.volume_size == ec2_root_block_volume_size
 
     reason := sprintf(
@@ -113,7 +113,7 @@ violation_redundant_subnet_public[reason] {
 
 # support functions
 array_contains(arr, elem) {
-  arr[_] = elem
+  arr[_] == elem
 }
 
 flatten_natgw[set] {
