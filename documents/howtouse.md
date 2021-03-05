@@ -108,9 +108,12 @@ terraform apply
 ### Githubレポジトリの準備
 Githubにログインし、レポジトリを作成します。なお、Githubへのサインアップは済んでいるものとします。  
 - メニューバー右の[+マーク] - [New repository]をクリックし、新規レポジトリ作成画面に移動します。
-- 新規レポジトリ作成画面では以下を入力し、[Create repository]をクリックしてください。特にVisiblityは必ず`Private`を選択してください。
+- 新規レポジトリ作成画面では以下を入力し、[Create repository]をクリックしてください。
   - レポジトリ名
   - レポジトリのVisiblity Private
+
+特にVisiblityは必ず`Private`を選択してください。このレポジトリにプッシュされた内容は自動でAWSにデプロイされてしまいます。またフォークされたレポジトリからプルリクエストを作成することで、アクセス可能な第三者がセルフホストランナーで任意のコードを実行することができてしまいます。[参考](https://docs.github.com/ja/actions/hosting-your-own-runners/about-self-hosted-runners#self-hosted-runner-security-with-public-repositories)  
+悪意のある第三者による不正を防ぐためにも必ず`Private`にしましょう。
 
 レポジトリ名を環境変数として登録しておきます。  
 
