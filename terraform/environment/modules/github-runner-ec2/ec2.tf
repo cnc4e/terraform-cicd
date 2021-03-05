@@ -4,8 +4,8 @@ locals {
 
 # Download runner
 mkdir actions-runner && cd actions-runner
-curl -O -L https://github.com/actions/runner/releases/download/v2.273.4/actions-runner-linux-x64-2.273.4.tar.gz
-tar xzf ./actions-runner-linux-x64-2.273.4.tar.gz
+curl -O -L "https://github.com/actions/runner/releases/download/v${var.ec2_runner_version}/actions-runner-linux-x64-${var.ec2_runner_version}.tar.gz"
+tar xzf "./actions-runner-linux-x64-${var.ec2_runner_version}.tar.gz"
 
 # setup runner
 chmod 777 -R /actions-runner

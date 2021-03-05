@@ -129,9 +129,13 @@ TerraformのバックエンドとしてS3を使用するため、GithubのSecret
 
 セルフホストランナーに与えるトークンを確認します。
 - レポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner] - [Add runner]を順にクリックします。
+- [Operatig System]を`Linux`に変更します。
+- [Download]コードブロック内で以下のようなコマンドを探します。
+  - `curl -O -L https://github.com/actions/runner/releases/download/v2.277.1/actions-runner-linux-x64-2.277.1.tar.gz`
+  - `Github runnerのバージョン`の値（例示コマンドにおける`2.277.1`の部分）を控えてください。次の手順で使用します。
 - [Configure]コードブロック内で以下のようなコマンドを探します。
   - `./config.cmd --url https://github.com/<ユーザ名>/<レポジトリ名> --token <レジストレーショントークン>`
-- `--url`の値と`--token`の値を控えてください。次の手順で使用します。
+  - `--url`の値と`--token`の値を控えてください。次の手順で使用します。
 
 
 ### Github Runner

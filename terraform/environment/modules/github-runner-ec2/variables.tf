@@ -30,6 +30,11 @@ variable "ec2_runner_name" {
   type        = string
 }
 
+variable "ec2_runner_version" {
+  description = "GitHub Runnerのバージョン"
+  type        = string
+}
+
 variable "ec2_runner_tags" {
   description = "runnerに付与するタグのリスト"
   type        = list(string)

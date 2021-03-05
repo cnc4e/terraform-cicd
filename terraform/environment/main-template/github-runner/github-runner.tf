@@ -32,6 +32,7 @@ locals {
   ec2_github_url             = "GITHUB-URL"
   ec2_registration_token     = "REGIST-TOKEN"
   ec2_runner_name            = ""
+  ec2_runner_version         = "RUNNER-VERSION"
   ec2_runner_tags            = ""
   ec2_subnet_id              = data.terraform_remote_state.network.outputs.public_subnet_ids[0]
   ec2_instance_type          = "t2.micro"
@@ -56,6 +57,7 @@ module "github-runner" {
   ec2_github_url             = local.ec2_github_url
   ec2_registration_token     = local.ec2_registration_token
   ec2_runner_name            = "${local.pj}-runner"
+  ec2_runner_version         = local.ec2_runner_version
   ec2_runner_tags            = [local.pj]
   ec2_subnet_id              = local.ec2_subnet_id
   ec2_instance_type          = local.ec2_instance_type
