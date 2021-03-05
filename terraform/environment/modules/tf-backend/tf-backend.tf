@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "tfstate" {
-  count         = length(var.env_names)
-  bucket        = "${lower(var.pj)}-tfstate-${lower(var.env_names[count.index])}"
-  acl           = "private"
+  for_each = toset(var.env_names)
+  bucket   = "${lower(var.pj)}-tfstate-${lower(each.value)}"
+  acl      = "private"
 
   versioning {
     enabled = true
@@ -16,16 +16,16 @@ resource "aws_s3_bucket" "tfstate" {
   }
 
   tags = merge(
-  {
-    "Name" = "${lower(var.pj)}-tfstate-${lower(var.env_names[count.index])}"
-  },
-  var.tags
+    {
+      "Name" = "${lower(var.pj)}-tfstate-${lower(each.value)}"
+    },
+    var.tags
   )
 }
 
 resource "aws_s3_bucket_public_access_block" "tfstate" {
-  count   = length(var.env_names)
-  bucket  = aws_s3_bucket.tfstate[count.index].bucket
+  for_each = toset(var.env_names)
+  bucket   = aws_s3_bucket.tfstate[each.key].bucket
 
   block_public_acls       = true
   block_public_policy     = true
@@ -34,8 +34,8 @@ resource "aws_s3_bucket_public_access_block" "tfstate" {
 }
 
 resource "aws_dynamodb_table" "tfstate_lock" {
-  count          = length(var.env_names)
-  name           = "${var.pj}-tfstate-lock-${lower(var.env_names[count.index])}"
+  for_each       = toset(var.env_names)
+  name           = "${var.pj}-tfstate-lock-${lower(each.value)}"
   read_capacity  = 1
   write_capacity = 1
   hash_key       = "LockID"
