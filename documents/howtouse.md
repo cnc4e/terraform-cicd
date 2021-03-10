@@ -224,7 +224,14 @@ git push --set-upstream origin dev:dev
 レポジトリルートに`.github/workflows/terraform-ci-dev.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
 また`.github/workflows/terraform-cd-dev.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。  
 
-この際本番環境のための`production`ブランチを作成しておきます。  
+|ファイル|トリガ|GithubActionsで実行される処理|
+|-|-|-|
+|terraform-ci-dev.yml|プルリクエスト作成/更新|開発環境へterraform plan実行/ポリシーチェック|
+|terraform-cd-dev.yml|プルリクエストマージ|開発環境へterraform apply実行|
+|terraform-ci-production.yml|プルリクエスト作成/更新|本番環境へterraform plan実行/ポリシーチェック|
+|terraform-cd-production.yml|プルリクエストマージ|本番環境へterraform apply実行|
+
+また、本番環境のための`production`ブランチを作成しておきます。  
 - Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
 - [Find or create a branch...]に`production`と入力して、[Create branch: production from dev]をクリックします。
 
