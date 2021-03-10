@@ -121,7 +121,7 @@ Githubにログインし、レポジトリを作成します。なお、Github�
 export REPOSITORYNAME=<レポジトリ名>
 ```
 
-TerraformのバックエンドとしてS3を使用するため、GithubのSecretsにAWSの認証情報を登録します。
+TerraformのバックエンドとしてS3を使用するため、GithubのSecretsにAWSの認証情報を登録します。認証情報をコード内にハードコードしてしまうと、万が一Githubにプッシュしてしまった場合に情報漏洩に繋がるリスクがあるため、Secretsを利用してください。
 - レポジトリトップ画面から[Settings] - [Secrets] - [New repository secret]を順にクリックします。
 - 以下の2つのsecretを作成します。
 
