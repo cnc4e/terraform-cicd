@@ -1,0 +1,2315 @@
+{
+    "format_version": "0.1",
+    "terraform_version": "0.14.7",
+    "planned_values": {
+        "outputs": {
+            "private_subnet_ids": {
+                "sensitive": false
+            },
+            "public_subnet_ids": {
+                "sensitive": false
+            },
+            "vpc_id": {
+                "sensitive": false
+            }
+        },
+        "root_module": {
+            "child_modules": [
+                {
+                    "resources": [
+                        {
+                            "address": "module.deployed_instance.aws_instance.deployed_instance",
+                            "mode": "managed",
+                            "type": "aws_instance",
+                            "name": "deployed_instance",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "ami": "ami-075a72b1992cb0687",
+                                "associate_public_ip_address": true,
+                                "credit_specification": [],
+                                "disable_api_termination": null,
+                                "ebs_optimized": null,
+                                "get_password_data": false,
+                                "hibernation": null,
+                                "iam_instance_profile": null,
+                                "instance_initiated_shutdown_behavior": null,
+                                "instance_type": "t2.large",
+                                "monitoring": null,
+                                "root_block_device": [
+                                    {
+                                        "delete_on_termination": true,
+                                        "volume_size": 30
+                                    }
+                                ],
+                                "source_dest_check": true,
+                                "tags": {
+                                    "Name": "tf-cicd-deployed-instance",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null,
+                                "user_data": null,
+                                "user_data_base64": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_instance.aws_security_group.deployed_instance",
+                            "mode": "managed",
+                            "type": "aws_security_group",
+                            "name": "deployed_instance",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "description": "For Deployed EC2",
+                                "name": "tf-cicd-deployed-instance-sg",
+                                "name_prefix": null,
+                                "revoke_rules_on_delete": false,
+                                "tags": {
+                                    "Name": "tf-cicd-deployed-instance-sg",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_instance.aws_security_group_rule.egress",
+                            "mode": "managed",
+                            "type": "aws_security_group_rule",
+                            "name": "egress",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 2,
+                            "values": {
+                                "cidr_blocks": [
+                                    "0.0.0.0/0"
+                                ],
+                                "description": null,
+                                "from_port": 0,
+                                "ipv6_cidr_blocks": null,
+                                "prefix_list_ids": null,
+                                "protocol": "-1",
+                                "self": false,
+                                "to_port": 0,
+                                "type": "egress"
+                            }
+                        },
+                        {
+                            "address": "module.deployed_instance.aws_security_group_rule.ingress[0]",
+                            "mode": "managed",
+                            "type": "aws_security_group_rule",
+                            "name": "ingress",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 2,
+                            "values": {
+                                "cidr_blocks": [
+                                    "210.148.59.64/28"
+                                ],
+                                "description": null,
+                                "from_port": 22,
+                                "ipv6_cidr_blocks": null,
+                                "prefix_list_ids": null,
+                                "protocol": "tcp",
+                                "self": false,
+                                "to_port": 22,
+                                "type": "ingress"
+                            }
+                        },
+                        {
+                            "address": "module.deployed_instance.aws_security_group_rule.ingress[1]",
+                            "mode": "managed",
+                            "type": "aws_security_group_rule",
+                            "name": "ingress",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 2,
+                            "values": {
+                                "cidr_blocks": [
+                                    "210.148.59.64/28"
+                                ],
+                                "description": null,
+                                "from_port": 80,
+                                "ipv6_cidr_blocks": null,
+                                "prefix_list_ids": null,
+                                "protocol": "tcp",
+                                "self": false,
+                                "to_port": 80,
+                                "type": "ingress"
+                            }
+                        },
+                        {
+                            "address": "module.deployed_instance.aws_security_group_rule.ingress[2]",
+                            "mode": "managed",
+                            "type": "aws_security_group_rule",
+                            "name": "ingress",
+                            "index": 2,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 2,
+                            "values": {
+                                "cidr_blocks": [
+                                    "210.148.59.64/28"
+                                ],
+                                "description": null,
+                                "from_port": 443,
+                                "ipv6_cidr_blocks": null,
+                                "prefix_list_ids": null,
+                                "protocol": "tcp",
+                                "self": false,
+                                "to_port": 443,
+                                "type": "ingress"
+                            }
+                        }
+                    ],
+                    "address": "module.deployed_instance"
+                },
+                {
+                    "resources": [
+                        {
+                            "address": "module.deployed_network.aws_eip.natgw[0]",
+                            "mode": "managed",
+                            "type": "aws_eip",
+                            "name": "natgw",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "associate_with_private_ip": null,
+                                "customer_owned_ipv4_pool": null,
+                                "tags": {
+                                    "Name": "tf-cicd-natgw-eip-0",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null,
+                                "vpc": true
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_eip.natgw[1]",
+                            "mode": "managed",
+                            "type": "aws_eip",
+                            "name": "natgw",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "associate_with_private_ip": null,
+                                "customer_owned_ipv4_pool": null,
+                                "tags": {
+                                    "Name": "tf-cicd-natgw-eip-1",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null,
+                                "vpc": true
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_internet_gateway.gw",
+                            "mode": "managed",
+                            "type": "aws_internet_gateway",
+                            "name": "gw",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "tags": {
+                                    "Name": "tf-cicd-internet-gateway",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_nat_gateway.ngw[0]",
+                            "mode": "managed",
+                            "type": "aws_nat_gateway",
+                            "name": "ngw",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "tags": {
+                                    "Name": "tf-cicd-nat-gateway-0",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_nat_gateway.ngw[1]",
+                            "mode": "managed",
+                            "type": "aws_nat_gateway",
+                            "name": "ngw",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "tags": {
+                                    "Name": "tf-cicd-nat-gateway-1",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route.private[0]",
+                            "mode": "managed",
+                            "type": "aws_route",
+                            "name": "private",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "destination_cidr_block": "0.0.0.0/0",
+                                "destination_ipv6_cidr_block": null,
+                                "timeouts": null,
+                                "transit_gateway_id": null,
+                                "vpc_peering_connection_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route.private[1]",
+                            "mode": "managed",
+                            "type": "aws_route",
+                            "name": "private",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "destination_cidr_block": "0.0.0.0/0",
+                                "destination_ipv6_cidr_block": null,
+                                "timeouts": null,
+                                "transit_gateway_id": null,
+                                "vpc_peering_connection_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route.public",
+                            "mode": "managed",
+                            "type": "aws_route",
+                            "name": "public",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "destination_cidr_block": "0.0.0.0/0",
+                                "destination_ipv6_cidr_block": null,
+                                "timeouts": null,
+                                "transit_gateway_id": null,
+                                "vpc_peering_connection_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table.private[0]",
+                            "mode": "managed",
+                            "type": "aws_route_table",
+                            "name": "private",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "tags": {
+                                    "Name": "tf-cicd-private-route-table-0",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table.private[1]",
+                            "mode": "managed",
+                            "type": "aws_route_table",
+                            "name": "private",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "tags": {
+                                    "Name": "tf-cicd-private-route-table-1",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table.public",
+                            "mode": "managed",
+                            "type": "aws_route_table",
+                            "name": "public",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "tags": {
+                                    "Name": "tf-cicd-public-route-table",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table_association.private[0]",
+                            "mode": "managed",
+                            "type": "aws_route_table_association",
+                            "name": "private",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "gateway_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table_association.private[1]",
+                            "mode": "managed",
+                            "type": "aws_route_table_association",
+                            "name": "private",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "gateway_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table_association.public[0]",
+                            "mode": "managed",
+                            "type": "aws_route_table_association",
+                            "name": "public",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "gateway_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_route_table_association.public[1]",
+                            "mode": "managed",
+                            "type": "aws_route_table_association",
+                            "name": "public",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 0,
+                            "values": {
+                                "gateway_id": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_subnet.private[0]",
+                            "mode": "managed",
+                            "type": "aws_subnet",
+                            "name": "private",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "assign_ipv6_address_on_creation": false,
+                                "availability_zone": "ap-southeast-2b",
+                                "cidr_block": "10.3.20.0/24",
+                                "ipv6_cidr_block": null,
+                                "map_public_ip_on_launch": false,
+                                "outpost_arn": null,
+                                "tags": {
+                                    "Name": "tf-cicd-private-subnet-0",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_subnet.private[1]",
+                            "mode": "managed",
+                            "type": "aws_subnet",
+                            "name": "private",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "assign_ipv6_address_on_creation": false,
+                                "availability_zone": "ap-southeast-2c",
+                                "cidr_block": "10.3.21.0/24",
+                                "ipv6_cidr_block": null,
+                                "map_public_ip_on_launch": false,
+                                "outpost_arn": null,
+                                "tags": {
+                                    "Name": "tf-cicd-private-subnet-1",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_subnet.public[0]",
+                            "mode": "managed",
+                            "type": "aws_subnet",
+                            "name": "public",
+                            "index": 0,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "assign_ipv6_address_on_creation": false,
+                                "availability_zone": "ap-southeast-2b",
+                                "cidr_block": "10.3.10.0/24",
+                                "ipv6_cidr_block": null,
+                                "map_public_ip_on_launch": false,
+                                "outpost_arn": null,
+                                "tags": {
+                                    "Name": "tf-cicd-public-subnet-0",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_subnet.public[1]",
+                            "mode": "managed",
+                            "type": "aws_subnet",
+                            "name": "public",
+                            "index": 1,
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "assign_ipv6_address_on_creation": false,
+                                "availability_zone": "ap-southeast-2c",
+                                "cidr_block": "10.3.11.0/24",
+                                "ipv6_cidr_block": null,
+                                "map_public_ip_on_launch": false,
+                                "outpost_arn": null,
+                                "tags": {
+                                    "Name": "tf-cicd-public-subnet-1",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                },
+                                "timeouts": null
+                            }
+                        },
+                        {
+                            "address": "module.deployed_network.aws_vpc.main",
+                            "mode": "managed",
+                            "type": "aws_vpc",
+                            "name": "main",
+                            "provider_name": "registry.terraform.io/hashicorp/aws",
+                            "schema_version": 1,
+                            "values": {
+                                "assign_generated_ipv6_cidr_block": false,
+                                "cidr_block": "10.3.0.0/16",
+                                "enable_dns_hostnames": true,
+                                "enable_dns_support": true,
+                                "instance_tenancy": "default",
+                                "tags": {
+                                    "Name": "tf-cicd-vpc",
+                                    "owner": "nobody",
+                                    "pj": "tf-cicd"
+                                }
+                            }
+                        }
+                    ],
+                    "address": "module.deployed_network"
+                }
+            ]
+        }
+    },
+    "resource_changes": [
+        {
+            "address": "module.deployed_instance.aws_instance.deployed_instance",
+            "module_address": "module.deployed_instance",
+            "mode": "managed",
+            "type": "aws_instance",
+            "name": "deployed_instance",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "ami": "ami-075a72b1992cb0687",
+                    "associate_public_ip_address": true,
+                    "credit_specification": [],
+                    "disable_api_termination": null,
+                    "ebs_optimized": null,
+                    "get_password_data": false,
+                    "hibernation": null,
+                    "iam_instance_profile": null,
+                    "instance_initiated_shutdown_behavior": null,
+                    "instance_type": "t2.large",
+                    "monitoring": null,
+                    "root_block_device": [
+                        {
+                            "delete_on_termination": true,
+                            "volume_size": 30
+                        }
+                    ],
+                    "source_dest_check": true,
+                    "tags": {
+                        "Name": "tf-cicd-deployed-instance",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null,
+                    "user_data": null,
+                    "user_data_base64": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "availability_zone": true,
+                    "cpu_core_count": true,
+                    "cpu_threads_per_core": true,
+                    "credit_specification": [],
+                    "ebs_block_device": true,
+                    "ephemeral_block_device": true,
+                    "host_id": true,
+                    "id": true,
+                    "instance_state": true,
+                    "ipv6_address_count": true,
+                    "ipv6_addresses": true,
+                    "key_name": true,
+                    "metadata_options": true,
+                    "network_interface": true,
+                    "outpost_arn": true,
+                    "password_data": true,
+                    "placement_group": true,
+                    "primary_network_interface_id": true,
+                    "private_dns": true,
+                    "private_ip": true,
+                    "public_dns": true,
+                    "public_ip": true,
+                    "root_block_device": [
+                        {
+                            "device_name": true,
+                            "encrypted": true,
+                            "iops": true,
+                            "kms_key_id": true,
+                            "volume_id": true,
+                            "volume_type": true
+                        }
+                    ],
+                    "secondary_private_ips": true,
+                    "security_groups": true,
+                    "subnet_id": true,
+                    "tags": {},
+                    "tenancy": true,
+                    "volume_tags": true,
+                    "vpc_security_group_ids": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_instance.aws_security_group.deployed_instance",
+            "module_address": "module.deployed_instance",
+            "mode": "managed",
+            "type": "aws_security_group",
+            "name": "deployed_instance",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "description": "For Deployed EC2",
+                    "name": "tf-cicd-deployed-instance-sg",
+                    "name_prefix": null,
+                    "revoke_rules_on_delete": false,
+                    "tags": {
+                        "Name": "tf-cicd-deployed-instance-sg",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "egress": true,
+                    "id": true,
+                    "ingress": true,
+                    "owner_id": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_instance.aws_security_group_rule.egress",
+            "module_address": "module.deployed_instance",
+            "mode": "managed",
+            "type": "aws_security_group_rule",
+            "name": "egress",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "cidr_blocks": [
+                        "0.0.0.0/0"
+                    ],
+                    "description": null,
+                    "from_port": 0,
+                    "ipv6_cidr_blocks": null,
+                    "prefix_list_ids": null,
+                    "protocol": "-1",
+                    "self": false,
+                    "to_port": 0,
+                    "type": "egress"
+                },
+                "after_unknown": {
+                    "cidr_blocks": [
+                        false
+                    ],
+                    "id": true,
+                    "security_group_id": true,
+                    "source_security_group_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_instance.aws_security_group_rule.ingress[0]",
+            "module_address": "module.deployed_instance",
+            "mode": "managed",
+            "type": "aws_security_group_rule",
+            "name": "ingress",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "cidr_blocks": [
+                        "210.148.59.64/28"
+                    ],
+                    "description": null,
+                    "from_port": 22,
+                    "ipv6_cidr_blocks": null,
+                    "prefix_list_ids": null,
+                    "protocol": "tcp",
+                    "self": false,
+                    "to_port": 22,
+                    "type": "ingress"
+                },
+                "after_unknown": {
+                    "cidr_blocks": [
+                        false
+                    ],
+                    "id": true,
+                    "security_group_id": true,
+                    "source_security_group_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_instance.aws_security_group_rule.ingress[1]",
+            "module_address": "module.deployed_instance",
+            "mode": "managed",
+            "type": "aws_security_group_rule",
+            "name": "ingress",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "cidr_blocks": [
+                        "210.148.59.64/28"
+                    ],
+                    "description": null,
+                    "from_port": 80,
+                    "ipv6_cidr_blocks": null,
+                    "prefix_list_ids": null,
+                    "protocol": "tcp",
+                    "self": false,
+                    "to_port": 80,
+                    "type": "ingress"
+                },
+                "after_unknown": {
+                    "cidr_blocks": [
+                        false
+                    ],
+                    "id": true,
+                    "security_group_id": true,
+                    "source_security_group_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_instance.aws_security_group_rule.ingress[2]",
+            "module_address": "module.deployed_instance",
+            "mode": "managed",
+            "type": "aws_security_group_rule",
+            "name": "ingress",
+            "index": 2,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "cidr_blocks": [
+                        "210.148.59.64/28"
+                    ],
+                    "description": null,
+                    "from_port": 443,
+                    "ipv6_cidr_blocks": null,
+                    "prefix_list_ids": null,
+                    "protocol": "tcp",
+                    "self": false,
+                    "to_port": 443,
+                    "type": "ingress"
+                },
+                "after_unknown": {
+                    "cidr_blocks": [
+                        false
+                    ],
+                    "id": true,
+                    "security_group_id": true,
+                    "source_security_group_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_eip.natgw[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_eip",
+            "name": "natgw",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "associate_with_private_ip": null,
+                    "customer_owned_ipv4_pool": null,
+                    "tags": {
+                        "Name": "tf-cicd-natgw-eip-0",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null,
+                    "vpc": true
+                },
+                "after_unknown": {
+                    "allocation_id": true,
+                    "association_id": true,
+                    "customer_owned_ip": true,
+                    "domain": true,
+                    "id": true,
+                    "instance": true,
+                    "network_interface": true,
+                    "private_dns": true,
+                    "private_ip": true,
+                    "public_dns": true,
+                    "public_ip": true,
+                    "public_ipv4_pool": true,
+                    "tags": {}
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_eip.natgw[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_eip",
+            "name": "natgw",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "associate_with_private_ip": null,
+                    "customer_owned_ipv4_pool": null,
+                    "tags": {
+                        "Name": "tf-cicd-natgw-eip-1",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null,
+                    "vpc": true
+                },
+                "after_unknown": {
+                    "allocation_id": true,
+                    "association_id": true,
+                    "customer_owned_ip": true,
+                    "domain": true,
+                    "id": true,
+                    "instance": true,
+                    "network_interface": true,
+                    "private_dns": true,
+                    "private_ip": true,
+                    "public_dns": true,
+                    "public_ip": true,
+                    "public_ipv4_pool": true,
+                    "tags": {}
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_internet_gateway.gw",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_internet_gateway",
+            "name": "gw",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "tags": {
+                        "Name": "tf-cicd-internet-gateway",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "id": true,
+                    "owner_id": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_nat_gateway.ngw[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_nat_gateway",
+            "name": "ngw",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "tags": {
+                        "Name": "tf-cicd-nat-gateway-0",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "allocation_id": true,
+                    "id": true,
+                    "network_interface_id": true,
+                    "private_ip": true,
+                    "public_ip": true,
+                    "subnet_id": true,
+                    "tags": {}
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_nat_gateway.ngw[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_nat_gateway",
+            "name": "ngw",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "tags": {
+                        "Name": "tf-cicd-nat-gateway-1",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "allocation_id": true,
+                    "id": true,
+                    "network_interface_id": true,
+                    "private_ip": true,
+                    "public_ip": true,
+                    "subnet_id": true,
+                    "tags": {}
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route.private[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route",
+            "name": "private",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "destination_cidr_block": "0.0.0.0/0",
+                    "destination_ipv6_cidr_block": null,
+                    "timeouts": null,
+                    "transit_gateway_id": null,
+                    "vpc_peering_connection_id": null
+                },
+                "after_unknown": {
+                    "destination_prefix_list_id": true,
+                    "egress_only_gateway_id": true,
+                    "gateway_id": true,
+                    "id": true,
+                    "instance_id": true,
+                    "instance_owner_id": true,
+                    "local_gateway_id": true,
+                    "nat_gateway_id": true,
+                    "network_interface_id": true,
+                    "origin": true,
+                    "route_table_id": true,
+                    "state": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route.private[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route",
+            "name": "private",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "destination_cidr_block": "0.0.0.0/0",
+                    "destination_ipv6_cidr_block": null,
+                    "timeouts": null,
+                    "transit_gateway_id": null,
+                    "vpc_peering_connection_id": null
+                },
+                "after_unknown": {
+                    "destination_prefix_list_id": true,
+                    "egress_only_gateway_id": true,
+                    "gateway_id": true,
+                    "id": true,
+                    "instance_id": true,
+                    "instance_owner_id": true,
+                    "local_gateway_id": true,
+                    "nat_gateway_id": true,
+                    "network_interface_id": true,
+                    "origin": true,
+                    "route_table_id": true,
+                    "state": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route.public",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route",
+            "name": "public",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "destination_cidr_block": "0.0.0.0/0",
+                    "destination_ipv6_cidr_block": null,
+                    "timeouts": null,
+                    "transit_gateway_id": null,
+                    "vpc_peering_connection_id": null
+                },
+                "after_unknown": {
+                    "destination_prefix_list_id": true,
+                    "egress_only_gateway_id": true,
+                    "gateway_id": true,
+                    "id": true,
+                    "instance_id": true,
+                    "instance_owner_id": true,
+                    "local_gateway_id": true,
+                    "nat_gateway_id": true,
+                    "network_interface_id": true,
+                    "origin": true,
+                    "route_table_id": true,
+                    "state": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table.private[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table",
+            "name": "private",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "tags": {
+                        "Name": "tf-cicd-private-route-table-0",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "id": true,
+                    "owner_id": true,
+                    "propagating_vgws": true,
+                    "route": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table.private[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table",
+            "name": "private",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "tags": {
+                        "Name": "tf-cicd-private-route-table-1",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "id": true,
+                    "owner_id": true,
+                    "propagating_vgws": true,
+                    "route": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table.public",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table",
+            "name": "public",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "tags": {
+                        "Name": "tf-cicd-public-route-table",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "id": true,
+                    "owner_id": true,
+                    "propagating_vgws": true,
+                    "route": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table_association.private[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table_association",
+            "name": "private",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "gateway_id": null
+                },
+                "after_unknown": {
+                    "id": true,
+                    "route_table_id": true,
+                    "subnet_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table_association.private[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table_association",
+            "name": "private",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "gateway_id": null
+                },
+                "after_unknown": {
+                    "id": true,
+                    "route_table_id": true,
+                    "subnet_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table_association.public[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table_association",
+            "name": "public",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "gateway_id": null
+                },
+                "after_unknown": {
+                    "id": true,
+                    "route_table_id": true,
+                    "subnet_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_route_table_association.public[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_route_table_association",
+            "name": "public",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "gateway_id": null
+                },
+                "after_unknown": {
+                    "id": true,
+                    "route_table_id": true,
+                    "subnet_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_subnet.private[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_subnet",
+            "name": "private",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "assign_ipv6_address_on_creation": false,
+                    "availability_zone": "ap-southeast-2b",
+                    "cidr_block": "10.3.20.0/24",
+                    "ipv6_cidr_block": null,
+                    "map_public_ip_on_launch": false,
+                    "outpost_arn": null,
+                    "tags": {
+                        "Name": "tf-cicd-private-subnet-0",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "availability_zone_id": true,
+                    "id": true,
+                    "ipv6_cidr_block_association_id": true,
+                    "owner_id": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_subnet.private[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_subnet",
+            "name": "private",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "assign_ipv6_address_on_creation": false,
+                    "availability_zone": "ap-southeast-2c",
+                    "cidr_block": "10.3.21.0/24",
+                    "ipv6_cidr_block": null,
+                    "map_public_ip_on_launch": false,
+                    "outpost_arn": null,
+                    "tags": {
+                        "Name": "tf-cicd-private-subnet-1",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "availability_zone_id": true,
+                    "id": true,
+                    "ipv6_cidr_block_association_id": true,
+                    "owner_id": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_subnet.public[0]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_subnet",
+            "name": "public",
+            "index": 0,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "assign_ipv6_address_on_creation": false,
+                    "availability_zone": "ap-southeast-2b",
+                    "cidr_block": "10.3.10.0/24",
+                    "ipv6_cidr_block": null,
+                    "map_public_ip_on_launch": false,
+                    "outpost_arn": null,
+                    "tags": {
+                        "Name": "tf-cicd-public-subnet-0",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "availability_zone_id": true,
+                    "id": true,
+                    "ipv6_cidr_block_association_id": true,
+                    "owner_id": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_subnet.public[1]",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_subnet",
+            "name": "public",
+            "index": 1,
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "assign_ipv6_address_on_creation": false,
+                    "availability_zone": "ap-southeast-2c",
+                    "cidr_block": "10.3.11.0/24",
+                    "ipv6_cidr_block": null,
+                    "map_public_ip_on_launch": false,
+                    "outpost_arn": null,
+                    "tags": {
+                        "Name": "tf-cicd-public-subnet-1",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    },
+                    "timeouts": null
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "availability_zone_id": true,
+                    "id": true,
+                    "ipv6_cidr_block_association_id": true,
+                    "owner_id": true,
+                    "tags": {},
+                    "vpc_id": true
+                }
+            }
+        },
+        {
+            "address": "module.deployed_network.aws_vpc.main",
+            "module_address": "module.deployed_network",
+            "mode": "managed",
+            "type": "aws_vpc",
+            "name": "main",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "change": {
+                "actions": [
+                    "create"
+                ],
+                "before": null,
+                "after": {
+                    "assign_generated_ipv6_cidr_block": false,
+                    "cidr_block": "10.3.0.0/16",
+                    "enable_dns_hostnames": true,
+                    "enable_dns_support": true,
+                    "instance_tenancy": "default",
+                    "tags": {
+                        "Name": "tf-cicd-vpc",
+                        "owner": "nobody",
+                        "pj": "tf-cicd"
+                    }
+                },
+                "after_unknown": {
+                    "arn": true,
+                    "default_network_acl_id": true,
+                    "default_route_table_id": true,
+                    "default_security_group_id": true,
+                    "dhcp_options_id": true,
+                    "enable_classiclink": true,
+                    "enable_classiclink_dns_support": true,
+                    "id": true,
+                    "ipv6_association_id": true,
+                    "ipv6_cidr_block": true,
+                    "main_route_table_id": true,
+                    "owner_id": true,
+                    "tags": {}
+                }
+            }
+        }
+    ],
+    "output_changes": {
+        "private_subnet_ids": {
+            "actions": [
+                "create"
+            ],
+            "before": null,
+            "after_unknown": true
+        },
+        "public_subnet_ids": {
+            "actions": [
+                "create"
+            ],
+            "before": null,
+            "after_unknown": true
+        },
+        "vpc_id": {
+            "actions": [
+                "create"
+            ],
+            "before": null,
+            "after_unknown": true
+        }
+    },
+    "prior_state": {
+        "format_version": "0.1",
+        "terraform_version": "0.14.7",
+        "values": {
+            "root_module": {
+                "child_modules": [
+                    {
+                        "resources": [
+                            {
+                                "address": "module.deployed_instance.data.aws_ami.recent_amazon_linux_2",
+                                "mode": "data",
+                                "type": "aws_ami",
+                                "name": "recent_amazon_linux_2",
+                                "provider_name": "registry.terraform.io/hashicorp/aws",
+                                "schema_version": 0,
+                                "values": {
+                                    "architecture": "x86_64",
+                                    "arn": "arn:aws:ec2:ap-southeast-2::image/ami-075a72b1992cb0687",
+                                    "block_device_mappings": [
+                                        {
+                                            "device_name": "/dev/xvda",
+                                            "ebs": {
+                                                "delete_on_termination": "true",
+                                                "encrypted": "false",
+                                                "iops": "0",
+                                                "snapshot_id": "snap-01fd27e547cedd781",
+                                                "volume_size": "8",
+                                                "volume_type": "gp2"
+                                            },
+                                            "no_device": "",
+                                            "virtual_name": ""
+                                        }
+                                    ],
+                                    "creation_date": "2021-02-20T05:01:19.000Z",
+                                    "description": "Amazon Linux 2 AMI 2.0.20210219.0 x86_64 HVM gp2",
+                                    "executable_users": null,
+                                    "filter": [
+                                        {
+                                            "name": "name",
+                                            "values": [
+                                                "amzn2-ami-hvm-2.0.*-x86_64-gp2"
+                                            ]
+                                        },
+                                        {
+                                            "name": "state",
+                                            "values": [
+                                                "available"
+                                            ]
+                                        }
+                                    ],
+                                    "hypervisor": "xen",
+                                    "id": "ami-075a72b1992cb0687",
+                                    "image_id": "ami-075a72b1992cb0687",
+                                    "image_location": "amazon/amzn2-ami-hvm-2.0.20210219.0-x86_64-gp2",
+                                    "image_owner_alias": "amazon",
+                                    "image_type": "machine",
+                                    "kernel_id": null,
+                                    "most_recent": true,
+                                    "name": "amzn2-ami-hvm-2.0.20210219.0-x86_64-gp2",
+                                    "name_regex": null,
+                                    "owner_id": "137112412989",
+                                    "owners": [
+                                        "amazon"
+                                    ],
+                                    "platform": null,
+                                    "product_codes": [],
+                                    "public": true,
+                                    "ramdisk_id": null,
+                                    "root_device_name": "/dev/xvda",
+                                    "root_device_type": "ebs",
+                                    "root_snapshot_id": "snap-01fd27e547cedd781",
+                                    "sriov_net_support": "simple",
+                                    "state": "available",
+                                    "state_reason": {
+                                        "code": "UNSET",
+                                        "message": "UNSET"
+                                    },
+                                    "tags": {},
+                                    "virtualization_type": "hvm"
+                                }
+                            }
+                        ],
+                        "address": "module.deployed_instance"
+                    },
+                    {
+                        "resources": [
+                            {
+                                "address": "module.deployed_network.data.aws_availability_zones.available",
+                                "mode": "data",
+                                "type": "aws_availability_zones",
+                                "name": "available",
+                                "provider_name": "registry.terraform.io/hashicorp/aws",
+                                "schema_version": 0,
+                                "values": {
+                                    "all_availability_zones": null,
+                                    "exclude_names": null,
+                                    "exclude_zone_ids": null,
+                                    "filter": null,
+                                    "group_names": [
+                                        "ap-southeast-2"
+                                    ],
+                                    "id": "ap-southeast-2",
+                                    "names": [
+                                        "ap-southeast-2a",
+                                        "ap-southeast-2b",
+                                        "ap-southeast-2c"
+                                    ],
+                                    "state": null,
+                                    "zone_ids": [
+                                        "apse2-az1",
+                                        "apse2-az3",
+                                        "apse2-az2"
+                                    ]
+                                }
+                            }
+                        ],
+                        "address": "module.deployed_network"
+                    }
+                ]
+            }
+        }
+    },
+    "configuration": {
+        "provider_config": {
+            "aws": {
+                "name": "aws",
+                "version_constraint": "3.13.0",
+                "expressions": {
+                    "region": {
+                        "constant_value": "ap-southeast-2"
+                    }
+                }
+            }
+        },
+        "root_module": {
+            "outputs": {
+                "private_subnet_ids": {
+                    "expression": {
+                        "references": [
+                            "module.deployed_network.private_subnet_ids"
+                        ]
+                    }
+                },
+                "public_subnet_ids": {
+                    "expression": {
+                        "references": [
+                            "module.deployed_network.public_subnet_ids"
+                        ]
+                    }
+                },
+                "vpc_id": {
+                    "expression": {
+                        "references": [
+                            "module.deployed_network.vpc_id"
+                        ]
+                    }
+                }
+            },
+            "module_calls": {
+                "deployed_instance": {
+                    "source": "../../modules/instance",
+                    "expressions": {
+                        "ec2_instance_type": {
+                            "references": [
+                                "local.ec2_instance_type"
+                            ]
+                        },
+                        "ec2_key_name": {
+                            "references": [
+                                "local.ec2_key_name"
+                            ]
+                        },
+                        "ec2_root_block_volume_size": {
+                            "references": [
+                                "local.ec2_root_block_volume_size"
+                            ]
+                        },
+                        "ec2_subnet_id": {
+                            "references": [
+                                "local.ec2_subnet_id"
+                            ]
+                        },
+                        "pj": {
+                            "references": [
+                                "local.pj"
+                            ]
+                        },
+                        "sg_ingress_cidr": {
+                            "references": [
+                                "local.sg_ingress_cidr"
+                            ]
+                        },
+                        "sg_ingress_port": {
+                            "references": [
+                                "local.sg_ingress_port"
+                            ]
+                        },
+                        "tags": {
+                            "references": [
+                                "local.tags"
+                            ]
+                        },
+                        "vpc_id": {
+                            "references": [
+                                "local.vpc_id"
+                            ]
+                        }
+                    },
+                    "module": {
+                        "resources": [
+                            {
+                                "address": "aws_instance.deployed_instance",
+                                "mode": "managed",
+                                "type": "aws_instance",
+                                "name": "deployed_instance",
+                                "provider_config_key": "deployed_instance:aws",
+                                "expressions": {
+                                    "ami": {
+                                        "references": [
+                                            "data.aws_ami.recent_amazon_linux_2"
+                                        ]
+                                    },
+                                    "associate_public_ip_address": {
+                                        "constant_value": true
+                                    },
+                                    "instance_type": {
+                                        "references": [
+                                            "var.ec2_instance_type"
+                                        ]
+                                    },
+                                    "key_name": {
+                                        "references": [
+                                            "var.ec2_key_name"
+                                        ]
+                                    },
+                                    "root_block_device": [
+                                        {
+                                            "volume_size": {
+                                                "references": [
+                                                    "var.ec2_root_block_volume_size"
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                    "subnet_id": {
+                                        "references": [
+                                            "var.ec2_subnet_id"
+                                        ]
+                                    },
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_security_group_ids": {
+                                        "references": [
+                                            "aws_security_group.deployed_instance"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 1
+                            },
+                            {
+                                "address": "aws_security_group.deployed_instance",
+                                "mode": "managed",
+                                "type": "aws_security_group",
+                                "name": "deployed_instance",
+                                "provider_config_key": "deployed_instance:aws",
+                                "expressions": {
+                                    "description": {
+                                        "constant_value": "For Deployed EC2"
+                                    },
+                                    "name": {
+                                        "references": [
+                                            "var.pj"
+                                        ]
+                                    },
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_id": {
+                                        "references": [
+                                            "var.vpc_id"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 1
+                            },
+                            {
+                                "address": "aws_security_group_rule.egress",
+                                "mode": "managed",
+                                "type": "aws_security_group_rule",
+                                "name": "egress",
+                                "provider_config_key": "deployed_instance:aws",
+                                "expressions": {
+                                    "cidr_blocks": {
+                                        "constant_value": [
+                                            "0.0.0.0/0"
+                                        ]
+                                    },
+                                    "from_port": {
+                                        "constant_value": 0
+                                    },
+                                    "protocol": {
+                                        "constant_value": "-1"
+                                    },
+                                    "security_group_id": {
+                                        "references": [
+                                            "aws_security_group.deployed_instance"
+                                        ]
+                                    },
+                                    "to_port": {
+                                        "constant_value": 0
+                                    },
+                                    "type": {
+                                        "constant_value": "egress"
+                                    }
+                                },
+                                "schema_version": 2
+                            },
+                            {
+                                "address": "aws_security_group_rule.ingress",
+                                "mode": "managed",
+                                "type": "aws_security_group_rule",
+                                "name": "ingress",
+                                "provider_config_key": "deployed_instance:aws",
+                                "expressions": {
+                                    "cidr_blocks": {
+                                        "references": [
+                                            "var.sg_ingress_cidr"
+                                        ]
+                                    },
+                                    "from_port": {
+                                        "references": [
+                                            "var.sg_ingress_port",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "protocol": {
+                                        "constant_value": "tcp"
+                                    },
+                                    "security_group_id": {
+                                        "references": [
+                                            "aws_security_group.deployed_instance"
+                                        ]
+                                    },
+                                    "to_port": {
+                                        "references": [
+                                            "var.sg_ingress_port",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "type": {
+                                        "constant_value": "ingress"
+                                    }
+                                },
+                                "schema_version": 2,
+                                "count_expression": {
+                                    "references": [
+                                        "var.sg_ingress_port"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "data.aws_ami.recent_amazon_linux_2",
+                                "mode": "data",
+                                "type": "aws_ami",
+                                "name": "recent_amazon_linux_2",
+                                "provider_config_key": "deployed_instance:aws",
+                                "expressions": {
+                                    "filter": [
+                                        {
+                                            "name": {
+                                                "constant_value": "name"
+                                            },
+                                            "values": {
+                                                "constant_value": [
+                                                    "amzn2-ami-hvm-2.0.*-x86_64-gp2"
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "name": {
+                                                "constant_value": "state"
+                                            },
+                                            "values": {
+                                                "constant_value": [
+                                                    "available"
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                    "most_recent": {
+                                        "constant_value": true
+                                    },
+                                    "owners": {
+                                        "constant_value": [
+                                            "amazon"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0
+                            }
+                        ],
+                        "variables": {
+                            "ec2_instance_type": {
+                                "description": "デプロイインスタンスのインスタンスタイプ"
+                            },
+                            "ec2_key_name": {
+                                "description": "デプロイインスタンスにsshログインするためのキーペア名"
+                            },
+                            "ec2_root_block_volume_size": {
+                                "description": "デプロイインスタンスのルートデバイスの容量(GB)"
+                            },
+                            "ec2_subnet_id": {
+                                "description": "デプロイインスタンスを配置するプライベートサブネットのID"
+                            },
+                            "pj": {
+                                "description": "リソース群に付与する接頭語"
+                            },
+                            "sg_ingress_cidr": {
+                                "description": "デプロイインスタンスのセキュリティグループのインバウンドCIDR"
+                            },
+                            "sg_ingress_port": {
+                                "description": "デプロイインスタンスのセキュリティグループのインバウンド終端ポート"
+                            },
+                            "tags": {
+                                "description": "リソース群に付与する共通タグ"
+                            },
+                            "vpc_id": {
+                                "description": "リソース群が属するVPCのID"
+                            }
+                        }
+                    }
+                },
+                "deployed_network": {
+                    "source": "../../modules/network",
+                    "expressions": {
+                        "pj": {
+                            "references": [
+                                "local.pj"
+                            ]
+                        },
+                        "subnet_private_cidrs": {
+                            "references": [
+                                "local.subnet_private_cidrs"
+                            ]
+                        },
+                        "subnet_public_cidrs": {
+                            "references": [
+                                "local.subnet_public_cidrs"
+                            ]
+                        },
+                        "tags": {
+                            "references": [
+                                "local.tags"
+                            ]
+                        },
+                        "vpc_cidr": {
+                            "references": [
+                                "local.vpc_cidr"
+                            ]
+                        }
+                    },
+                    "module": {
+                        "outputs": {
+                            "private_subnet_ids": {
+                                "expression": {
+                                    "references": [
+                                        "aws_subnet.private"
+                                    ]
+                                }
+                            },
+                            "public_subnet_ids": {
+                                "expression": {
+                                    "references": [
+                                        "aws_subnet.public"
+                                    ]
+                                }
+                            },
+                            "vpc_id": {
+                                "expression": {
+                                    "references": [
+                                        "aws_vpc.main"
+                                    ]
+                                }
+                            }
+                        },
+                        "resources": [
+                            {
+                                "address": "aws_eip.natgw",
+                                "mode": "managed",
+                                "type": "aws_eip",
+                                "name": "natgw",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "count.index",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc": {
+                                        "constant_value": true
+                                    }
+                                },
+                                "schema_version": 0,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_public_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_internet_gateway.gw",
+                                "mode": "managed",
+                                "type": "aws_internet_gateway",
+                                "name": "gw",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_id": {
+                                        "references": [
+                                            "aws_vpc.main"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0
+                            },
+                            {
+                                "address": "aws_nat_gateway.ngw",
+                                "mode": "managed",
+                                "type": "aws_nat_gateway",
+                                "name": "ngw",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "allocation_id": {
+                                        "references": [
+                                            "aws_eip.natgw",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "subnet_id": {
+                                        "references": [
+                                            "aws_subnet.public",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "count.index",
+                                            "var.tags"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_public_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_route.private",
+                                "mode": "managed",
+                                "type": "aws_route",
+                                "name": "private",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "destination_cidr_block": {
+                                        "constant_value": "0.0.0.0/0"
+                                    },
+                                    "nat_gateway_id": {
+                                        "references": [
+                                            "aws_nat_gateway.ngw",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "route_table_id": {
+                                        "references": [
+                                            "aws_route_table.private",
+                                            "count.index"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_public_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_route.public",
+                                "mode": "managed",
+                                "type": "aws_route",
+                                "name": "public",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "destination_cidr_block": {
+                                        "constant_value": "0.0.0.0/0"
+                                    },
+                                    "gateway_id": {
+                                        "references": [
+                                            "aws_internet_gateway.gw"
+                                        ]
+                                    },
+                                    "route_table_id": {
+                                        "references": [
+                                            "aws_route_table.public"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0
+                            },
+                            {
+                                "address": "aws_route_table.private",
+                                "mode": "managed",
+                                "type": "aws_route_table",
+                                "name": "private",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "count.index",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_id": {
+                                        "references": [
+                                            "aws_vpc.main"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_public_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_route_table.public",
+                                "mode": "managed",
+                                "type": "aws_route_table",
+                                "name": "public",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_id": {
+                                        "references": [
+                                            "aws_vpc.main"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0
+                            },
+                            {
+                                "address": "aws_route_table_association.private",
+                                "mode": "managed",
+                                "type": "aws_route_table_association",
+                                "name": "private",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "route_table_id": {
+                                        "references": [
+                                            "aws_route_table.private",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "subnet_id": {
+                                        "references": [
+                                            "aws_subnet.private",
+                                            "count.index"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_private_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_route_table_association.public",
+                                "mode": "managed",
+                                "type": "aws_route_table_association",
+                                "name": "public",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "route_table_id": {
+                                        "references": [
+                                            "aws_route_table.public"
+                                        ]
+                                    },
+                                    "subnet_id": {
+                                        "references": [
+                                            "aws_subnet.public",
+                                            "count.index"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 0,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_public_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_subnet.private",
+                                "mode": "managed",
+                                "type": "aws_subnet",
+                                "name": "private",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "availability_zone": {
+                                        "references": [
+                                            "data.aws_availability_zones.available",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "cidr_block": {
+                                        "references": [
+                                            "var.subnet_private_cidrs",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "count.index",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_id": {
+                                        "references": [
+                                            "aws_vpc.main"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 1,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_private_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_subnet.public",
+                                "mode": "managed",
+                                "type": "aws_subnet",
+                                "name": "public",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "availability_zone": {
+                                        "references": [
+                                            "data.aws_availability_zones.available",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "cidr_block": {
+                                        "references": [
+                                            "var.subnet_public_cidrs",
+                                            "count.index"
+                                        ]
+                                    },
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "count.index",
+                                            "var.tags"
+                                        ]
+                                    },
+                                    "vpc_id": {
+                                        "references": [
+                                            "aws_vpc.main"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 1,
+                                "count_expression": {
+                                    "references": [
+                                        "var.subnet_public_cidrs"
+                                    ]
+                                }
+                            },
+                            {
+                                "address": "aws_vpc.main",
+                                "mode": "managed",
+                                "type": "aws_vpc",
+                                "name": "main",
+                                "provider_config_key": "deployed_network:aws",
+                                "expressions": {
+                                    "cidr_block": {
+                                        "references": [
+                                            "var.vpc_cidr"
+                                        ]
+                                    },
+                                    "enable_dns_hostnames": {
+                                        "constant_value": true
+                                    },
+                                    "tags": {
+                                        "references": [
+                                            "var.pj",
+                                            "var.tags"
+                                        ]
+                                    }
+                                },
+                                "schema_version": 1
+                            },
+                            {
+                                "address": "data.aws_availability_zones.available",
+                                "mode": "data",
+                                "type": "aws_availability_zones",
+                                "name": "available",
+                                "provider_config_key": "deployed_network:aws",
+                                "schema_version": 0
+                            }
+                        ],
+                        "variables": {
+                            "pj": {
+                                "description": "リソース群に付与する接頭語"
+                            },
+                            "subnet_private_cidrs": {
+                                "description": "プライベートサブネットのアドレス帯"
+                            },
+                            "subnet_public_cidrs": {
+                                "description": "パブリックサブネットのアドレス帯"
+                            },
+                            "tags": {
+                                "description": "リソース群に付与する共通タグ"
+                            },
+                            "vpc_cidr": {
+                                "description": "VPCのネットワークアドレス帯"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
