@@ -5,7 +5,7 @@ resource "aws_security_group" "deployed_instance" {
 
   tags = merge(
     {
-      "Name" = "${var.pj}-deployed-instance-sg"
+      "Name" = "${var.pj}-deployed-instance-sg-${var.env}"
     },
     var.tags
   )

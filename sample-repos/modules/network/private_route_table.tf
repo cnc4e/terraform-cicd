@@ -5,7 +5,7 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     {
-      "Name" = "${var.pj}-private-route-table-${count.index}"
+      "Name" = "${var.pj}-private-route-table-${count.index}-${var.env}"
     },
     var.tags
   )

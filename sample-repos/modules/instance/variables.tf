@@ -9,6 +9,11 @@ variable "pj" {
   type        = string
 }
 
+variable "env" {
+  description = "リソース群に付与する環境"
+  type        = string
+}
+
 variable "vpc_id" {
   description = "リソース群が属するVPCのID"
   type        = string

@@ -22,7 +22,7 @@ resource "aws_instance" "deployed_instance" {
 
   tags = merge(
     {
-      "Name" = "${var.pj}-deployed-instance"
+      "Name" = "${var.pj}-deployed-instance-${var.env}"
     },
     var.tags
   )
