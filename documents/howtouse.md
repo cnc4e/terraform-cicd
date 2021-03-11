@@ -154,6 +154,7 @@ cd $CLONEDIR/terraform-cicd/terraform/environment/$PJNAME/github-runner
 # ↓sedで置換する時、http:の`:`の前にエスケープを入れてください。例 https\://github.com
 sed -i -e 's:GITHUB-URL:<先ほどGithubレポジトリで確認したURL>:g' github-runner.tf 
 sed -i -e 's:REGIST-TOKEN:<先ほどGithubレポジトリで確認したレジストレーショントークン>:g' github-runner.tf
+sed -i -e 's:RUNNER-VERSION:<先ほどGithubレポジトリで確認したGithub runnerのバージョン>:g' github-runner.tf
 ```
 
 **macの場合**
@@ -162,6 +163,7 @@ sed -i -e 's:REGIST-TOKEN:<先ほどGithubレポジトリで確認したレジ�
 # ↓sedで置換する時、http:の`:`の前にエスケープを入れてください。例 https\://github.com
 sed -i "" -e 's:GITHUB-URL:<先ほどGithubレポジトリで確認したURL>:g' github-runner.tf
 sed -i "" -e 's:REGIST-TOKEN:<先ほどGithubレポジトリで確認したレジストレーショントークン>:g' github-runner.tf
+sed -i "" -e 's:RUNNER-VERSION:<先ほどGithubレポジトリで確認したGithub runnerのバージョン>:g' github-runner.tf
 ```
 
 修正したら以下コマンドでリソースを作成します。
