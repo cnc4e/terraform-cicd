@@ -292,6 +292,11 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
+Terraform経由でAWSにデプロイされていることを確認します。  
+- AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）
+- EC2サービスを開き、「PJ名-deployed-instance-dev」という名前の`t2.micro`インスタンスが作成されていることを確認します。
+- VPCサービスを開き、開発環境用に指定したCIDRでVPCが作成されていることを確認します。
+
 ここまでの手順で、CICDパイプラインを通して`dev`ブランチから開発環境にサービスをデプロイすることができました。  
 ![](../images/use-dev.png)  
 
@@ -383,6 +388,11 @@ GithubActionsが動作し、`terraform apply`に成功しているのを確認�
 - Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
 - レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
+
+Terraform経由でAWSにデプロイされていることを確認します。  
+- AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）
+- EC2サービスを開き、「PJ名-deployed-instance-production」という名前の`t2.large`インスタンスが作成されていることを確認します。
+- VPCサービスを開き、本番環境用に指定したCIDRでVPCが作成されていることを確認します。
 
 これで本番環境へのデプロイが完了しました。  
 ![](../images/use-production.png)  
