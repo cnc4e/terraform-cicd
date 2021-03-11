@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "REGION"
+  region = "REGION"
 }
 
 # parameter settings
