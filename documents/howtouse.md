@@ -265,6 +265,7 @@ git push --set-upstream origin feature:feature
 Githubでマージ先：`dev`、マージ元：`feature`としてプルリクエストを作成します。
 - Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
 - `base: dev`、`compare: feature`を指定し、[Create pull request]をクリックします。
+- 遷移先でプルリクエストのタイトルを入力します。任意のタイトルで構いません。その後[Create pull request]をクリックします。
 
 GithubActionsが動作し、`terraform plan`は成功するもののポリシーチェックに失敗しているのを確認します。
 - Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
@@ -378,6 +379,7 @@ natgw_count = 2
 Githubでマージ先：`production`、マージ元：`dev`としてプルリクエストを作成します。
 - Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
 - `base: production`、`compare: dev`を指定し、[Create pull request]をクリックします。
+- 遷移先でプルリクエストのタイトルを入力します。任意のタイトルで構いません。その後[Create pull request]をクリックします。
 
 GithubActionsが動作し、`terraform plan`とポリシーチェックに成功しているのを確認します。
 - Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
