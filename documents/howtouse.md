@@ -407,26 +407,13 @@ Terraform経由でAWSにデプロイされていることを確認します。
 
 ## 環境削除
 
-構築したときの逆の以下モジュール順に`terraform destroy`を実行してください。
+デプロイリソース以外は構築したときと逆の以下モジュール順に`terraform destroy`を実行してください。
 
-### デプロイの削除
-**本番環境**  
-
-``` sh
-cd $CLONEDIR/$REPOSITORYNAME/main-template/production
-terraform init
-terraform destroy
-> yes
-```
-
-**開発環境**  
-
-``` sh
-cd $CLONEDIR/$REPOSITORYNAME/main-template/dev
-terraform init
-terraform destroy
-> yes
-```
+### デプロイリソースの削除
+GithubActionsを手動で動作させ、GithubActionsから`terraform destroy`を実行させます。  
+- Githubにログインし、レポジトリトップから[Actions] - [terraform-destroy] - [Run workflow]をクリックします。
+- `dev`を入力し開発環境にデプロイしたリソースを削除します。ジョブが成功していればデプロイしたリソースが削除されています。
+- 同じ手順で[Run workflow]で`production`を入力し本番環境にデプロイしたリソースを削除します。ジョブが成功していればデプロイしたリソースが削除されています。
 
 ### Github runnerの削除
 
