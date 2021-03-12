@@ -9,6 +9,11 @@ variable "pj" {
   type        = string
 }
 
+variable "env" {
+  description = "リソース群に付与する環境"
+  type        = string
+}
+
 # module parameter
 variable "vpc_cidr" {
   description = "VPCのネットワークアドレス帯"

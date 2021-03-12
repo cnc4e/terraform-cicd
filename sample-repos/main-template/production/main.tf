@@ -5,11 +5,13 @@ provider "aws" {
 # parameter settings
 locals {
   pj       = "PJ-NAME"
+  env      = "production"
   vpc_cidr = "10.3.0.0/16"
   vpc_id   = module.deployed_network.vpc_id
   tags = {
     pj    = "PJ-NAME"
     owner = "OWNER"
+    env   = "production"
   }
 
   subnet_public_cidrs  = ["10.3.10.0/24", "10.3.11.0/24"]

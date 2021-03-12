@@ -3,7 +3,7 @@ resource "aws_route_table" "public" {
 
   tags = merge(
     {
-      "Name" = "${var.pj}-public-route-table"
+      "Name" = "${var.pj}-public-route-table-${var.env}"
     },
     var.tags
   )

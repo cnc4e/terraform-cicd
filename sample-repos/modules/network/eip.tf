@@ -4,7 +4,7 @@ resource "aws_eip" "natgw" {
 
   tags = merge(
   {
-    "Name" = "${var.pj}-natgw-eip-${count.index}"
+    "Name" = "${var.pj}-natgw-eip-${count.index}-${var.env}"
   },
   var.tags
   )
