@@ -1,0 +1,30 @@
+name: terraform-destroy
+on: 
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Env for 'terraform destroy'. 'dev' or 'production'"
+        required: true
+        default: "dev"
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "main-template/${{ github.event.inputs.env }}/"
+    steps:
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v1
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: REGION
+        
+    - name: Terraform init
+      id: init
+      run: terraform init
+      
+    - name: Terraform destroy
+      id: destroy
+      run: terraform destroy -auto-approve -lock=false -no-color
