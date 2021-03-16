@@ -410,10 +410,82 @@ Terraform経由でAWSにデプロイされていることを確認します。
 デプロイリソース以外は構築したときと逆の以下モジュール順に`terraform destroy`を実行してください。
 
 ### デプロイリソースの削除
-GithubActionsを手動で動作させ、GithubActionsから`terraform destroy`を実行させます。  
-- Githubにログインし、レポジトリトップから[Actions] - [terraform-destroy] - [Run workflow]をクリックします。
-- `dev`を入力し開発環境にデプロイしたリソースを削除します。ジョブが成功していればデプロイしたリソースが削除されています。
-- 同じ手順で[Run workflow]で`production`を入力し本番環境にデプロイしたリソースを削除します。ジョブが成功していればデプロイしたリソースが削除されています。
+Terraformコードの一部をコメントアウトし、GithubActions経由で`terraform apply`を実行します。これにより、環境が削除されていることも含めてGithub上のTerraformコードが実際の環境を表すことになります。  
+`dev`ブランチから開発環境のデプロイリソースを削除します。
+- `$CLONEDIR/$REPOSITORYNAME/main-template/dev/main.tf`を以下のようにコメントアウトします。モジュールと、モジュールから出力される値を使用している部分をコメントアウトします。
+```
+  provider "aws" {
+  region = "us-east-2"
+}
+
+# parameter settings
+locals {
+  pj       = "tf-cicd"
+  vpc_cidr = "10.2.0.0/16"
+  #vpc_id   = module.deployed_network.vpc_id
+  tags = {
+    pj    = "tf-cicd"
+    owner = "nobody"
+  }
+
+  subnet_public_cidrs  = ["10.2.10.0/24"]
+  subnet_private_cidrs = ["10.2.20.0/24"]
+
+  #ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
+  ec2_instance_type          = "t2.micro"
+  ec2_root_block_volume_size = 10
+  ec2_key_name               = ""
+
+  sg_ingress_port = [0]
+  sg_ingress_cidr = "210.148.59.64/28"
+}
+
+#module "deployed_network" {
+#  source = "../../modules/network"
+#
+#  # common parameter
+#  pj   = local.pj
+#  tags = local.tags
+#
+#  # module parameter
+#  vpc_cidr = local.vpc_cidr
+#
+#  subnet_public_cidrs  = local.subnet_public_cidrs
+#  subnet_private_cidrs = local.subnet_private_cidrs
+#}
+#
+#module "deployed_instance" {
+#  source = "../../modules/instance"
+#
+#  # common parameter
+#  pj     = local.pj
+#  vpc_id = local.vpc_id
+#  tags   = local.tags
+#
+#  # module parameter
+#  ec2_subnet_id              = local.ec2_subnet_id
+#  ec2_instance_type          = local.ec2_instance_type
+#  ec2_root_block_volume_size = local.ec2_root_block_volume_size
+#  ec2_key_name               = local.ec2_key_name
+#
+#  sg_ingress_port = local.sg_ingress_port
+#  sg_ingress_cidr = local.sg_ingress_cidr
+#}
+```
+
+- `$CLONEDIR/$REPOSITORYNAME/main-template/dev/output.tf`をすべてコメントアウトします。
+- Githubにプッシュします。
+``` sh
+cd $CLONEDIR/$REPOSITORYNAME
+git add .
+git commit -m "resources comment out"
+git push
+```
+- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。Actionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
+- AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）デプロイしたリソースが削除されていることを確認します。
+
+`production`ブランチから本番環境に対しても同じようにデプロイリソース削除を行います。
+
 
 ### Github runnerの削除
 
