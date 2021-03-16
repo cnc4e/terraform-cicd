@@ -4,6 +4,9 @@ on:
     branches:
     - production
     types: [closed]
+  push:
+    branches:
+    - production
 jobs:
   deploy:
     runs-on: ubuntu-latest
