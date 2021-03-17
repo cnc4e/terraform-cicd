@@ -463,3 +463,9 @@ terraform destroy
 rm -rf $CLONEDIR/terraform/environment/$PJNAME
 rm -rf $CLONEDIR/$REPOSITORYNAME
 ```
+
+### Githubレポジトリの削除
+
+Githubのレポジトリを削除します。  
+- Githubにログインし、レポジトリトップ画面から[Settings]をクリックします。
+- ページ下部[Danger Zone] - [Delete this repository]をクリックし、表示される指示に従いレポジトリを削除してください。
