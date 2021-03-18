@@ -12,6 +12,9 @@ jobs:
         working-directory: main-template/production/
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
     - uses: hashicorp/setup-terraform@v1
     - uses: aws-actions/configure-aws-credentials@v1
       with:
