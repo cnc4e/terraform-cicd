@@ -410,11 +410,20 @@ Terraform経由でAWSにデプロイされていることを確認します。
 デプロイリソース以外は構築したときと逆の以下モジュール順に`terraform destroy`を実行してください。
 
 ### デプロイリソースの削除
-Terraformコードの一部をコメントアウトし、GithubActions経由で`terraform apply`を実行します。これにより、環境が削除されていることも含めてGithub上のTerraformコードが実際の環境を表すことになります。  
-`dev`ブランチから開発環境のデプロイリソースを削除します。
+Terraformコードの一部をコメントアウトし、プルリクエストを作成しマージします。そうすることでGithubActions経由で`terraform apply`が実行されます。これにより、環境が削除されていることも含めてGithub上のTerraformコードが実際の環境を表すことになります。  
+`feature`ブランチで修正を行い、プルリクエストを経由して`dev`ブランチの開発環境、`production`ブランチの本番環境を削除します。
+
+#### Terraformコード修正
+`feature`ブランチに切り替えます。
+``` sh
+cd $CLONEDIR/$REPOSITORYNAME
+git checkout feature
+```
+
+`feature`ブランチでTerraformコードの一部をコメントアウトします。  
 - `$CLONEDIR/$REPOSITORYNAME/main-template/dev/main.tf`を以下のようにコメントアウトします。モジュールと、モジュールから出力される値を使用している部分をコメントアウトします。
 ```
-  provider "aws" {
+provider "aws" {
   region = "us-east-2"
 }
 
@@ -474,18 +483,99 @@ locals {
 ```
 
 - `$CLONEDIR/$REPOSITORYNAME/main-template/dev/output.tf`をすべてコメントアウトします。
-- Githubにプッシュします。
+
+- `$CLONEDIR/$REPOSITORYNAME/main-template/production/main.tf`を以下のようにコメントアウトします。モジュールと、モジュールから出力される値を使用している部分をコメントアウトします。
+```
+provider "aws" {
+  region = "us-east-2"
+}
+
+# parameter settings
+locals {
+  pj       = "tf-cicd"
+  vpc_cidr = "10.3.0.0/16"
+  #vpc_id   = module.deployed_network.vpc_id
+  tags = {
+    pj    = "tf-cicd"
+    owner = "nobody"
+  }
+
+  subnet_public_cidrs  = ["10.3.10.0/24", "10.3.11.0/24"]
+  subnet_private_cidrs = ["10.3.20.0/24", "10.3.21.0/24"]
+
+  #ec2_subnet_id              = module.deployed_network.private_subnet_ids[0]
+  ec2_instance_type          = "t2.large"
+  ec2_root_block_volume_size = 30
+  ec2_key_name               = ""
+
+  sg_ingress_port = [22, 80, 443]
+  sg_ingress_cidr = "210.148.59.64/28"
+}
+
+#module "deployed_network" {
+#  source = "../../modules/network"
+#
+#  # common parameter
+#  pj   = local.pj
+#  tags = local.tags
+#
+#  # module parameter
+#  vpc_cidr = local.vpc_cidr
+#
+#  subnet_public_cidrs  = local.subnet_public_cidrs
+#  subnet_private_cidrs = local.subnet_private_cidrs
+#}
+#
+#module "deployed_instance" {
+#  source = "../../modules/instance"
+#
+#  # common parameter
+#  pj     = local.pj
+#  vpc_id = local.vpc_id
+#  tags   = local.tags
+#
+#  # module parameter
+#  ec2_subnet_id              = local.ec2_subnet_id
+#  ec2_instance_type          = local.ec2_instance_type
+#  ec2_root_block_volume_size = local.ec2_root_block_volume_size
+#  ec2_key_name               = local.ec2_key_name
+#
+#  sg_ingress_port = local.sg_ingress_port
+#  sg_ingress_cidr = local.sg_ingress_cidr
+#}
+```
+
+- `$CLONEDIR/$REPOSITORYNAME/main-template/production/output.tf`をすべてコメントアウトします。
+
+
+Githubにプッシュします。
 ``` sh
-cd $CLONEDIR/$REPOSITORYNAME
 git add .
 git commit -m "resources comment out"
 git push
 ```
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。Actionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
-- AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）デプロイしたリソースが削除されていることを確認します。
 
-`production`ブランチから本番環境に対しても同じようにデプロイリソース削除を行います。
+#### プルリクエスト作成・マージ
+Githubでマージ先：`dev`、マージ元：`feature`としてプルリクエストを作成します。
+- Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
+- `base: dev`、`compare: feature`を指定し、[Create pull request]をクリックします。
+- 遷移先でプルリクエストのタイトルを入力します。任意のタイトルで構いません。その後[Create pull request]をクリックします。
 
+プルリクエストをマージし、GithubActionsを動作させてみます。
+- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
+
+GithubActionsが動作し、`terraform apply`に成功しているのを確認します。
+- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
+- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
+
+Terraform経由でAWSの開発環境が削除されていることを確認します。  
+- AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）
+- EC2サービスを開き、「PJ名-deployed-instance-dev」という名前のインスタンスが削除されていることを確認します。
+- VPCサービスを開き、開発環境用のVPCが削除されていることを確認します。
+
+マージ先：`production`、マージ元：`dev`として再度[プルリクエスト作成・マージ](#プルリクエスト作成マージ)を行います。開発環境と記載されている箇所は本番環境と読み替えて実行してください。  
+これにより開発環境、本番環境共にコメントアウトされたTerraformコードがレポジトリに存在し、かつ各環境はTerraformコードを反映し、リソースが削除されています。
 
 ### Github runnerの削除
 
