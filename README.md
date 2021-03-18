@@ -18,10 +18,18 @@
 
 # バージョン
 
-本レポジトリのモジュール群は以下のバージョンを前提としてます。（構築時のバージョンも記載します。）
+本レポジトリのモジュール群は以下のバージョンを前提としています。（構築時のバージョンも記載します。）
 
 terraform 0.13.2 以上　（構築時 0.14.7）  
 aws providor 3.5.0以上　
+
+# 構成ツール
+
+本レポジトリでは主に以下のようなツールを使用してCICDパイプラインを構成しています。
+
+- [OPA](https://www.openpolicyagent.org/)
+- [setup-terraform](https://github.com/hashicorp/setup-terraform)
+- [github actions runner](https://github.com/actions/runner)
 
 # ドキュメント
 
