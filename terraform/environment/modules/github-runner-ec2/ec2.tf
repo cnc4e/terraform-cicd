@@ -2,6 +2,12 @@ locals {
   default_init_script = <<SHELLSCRIPT
 #!/bin/bash
 
+# install docker
+amazon-linux-extras install -y docker
+systemctl enable docker
+systemctl start docker
+usermod -a -G docker ec2-user
+
 # Download runner
 mkdir actions-runner && cd actions-runner
 curl -O -L "https://github.com/actions/runner/releases/download/v${var.ec2_runner_version}/actions-runner-linux-x64-${var.ec2_runner_version}.tar.gz"
