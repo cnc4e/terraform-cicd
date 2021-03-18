@@ -4,8 +4,6 @@
     - [ポリシーチェック実行](#ポリシーチェック実行)
   - [プルリクエストマージ](#プルリクエストマージ)
     - [terraformコマンド実行](#terraformコマンド実行-1)
-  - [手動](#手動)
-    - [terraformコマンド実行](#terraformコマンド実行-2)
 
 # CICDフロー説明
 
@@ -63,14 +61,3 @@ OPA（Open Policy Agent）を使用してポリシーチェックを行います
 
 `apply`でデプロイを行います。トリガとなったプルリクエストに、実行結果をコメントとして出力させています。プルリクエストがクローズ済でもコメントは行われます。
 
-## 手動
-Github上から手動でGithubActionsをキックすることで、以下のジョブが実行されます。
-- terraformコマンド実行
-
-Githubにログインし、レポジトリトップから[Actions] - [terraform-destroy] - [Run workflow]より実行可能です。実行時には`dev`または`production`を指定します。  
-
-### terraformコマンド実行
-ジョブ内で以下のterraformコマンドを実行します。
-- `terraform destroy`
-
-`destroy`でデプロイ済のリソースを削除します。実行時に指定した環境を削除します。
