@@ -236,7 +236,6 @@ git push --set-upstream origin dev:dev
 |terraform-cd-dev.yml|プルリクエストマージ|開発環境へterraform apply実行|
 |terraform-ci-production.yml|プルリクエスト作成/更新|本番環境へterraform plan実行/ポリシーチェック|
 |terraform-cd-production.yml|プルリクエストマージ|本番環境へterraform apply実行|
-|terraform-destroy.yml|手動|開発/本番環境へterraform destroy実行（実行時に環境指定）|
 
 また、本番環境のための`production`ブランチを作成しておきます。  
 - Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
