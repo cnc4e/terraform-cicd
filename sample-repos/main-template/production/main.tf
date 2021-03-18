@@ -31,6 +31,7 @@ module "deployed_network" {
 
   # common parameter
   pj   = local.pj
+  env  = local.env
   tags = local.tags
 
   # module parameter
@@ -45,6 +46,7 @@ module "deployed_instance" {
 
   # common parameter
   pj     = local.pj
+  env    = local.env
   vpc_id = local.vpc_id
   tags   = local.tags
 
