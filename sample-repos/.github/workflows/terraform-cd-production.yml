@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    if: github.event.pull_request.merged == true
     defaults:
       run:
         working-directory: main-template/production/
