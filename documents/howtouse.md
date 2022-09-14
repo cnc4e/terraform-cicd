@@ -1,11 +1,11 @@
 # 使い方
 
-以下の順番で実行します。delivery環境構築の`ネットワーク`は自身の環境に合わせて実行要否を判断してください。delivery環境構築では`Githubレポジトリの準備`のみTerraformモジュールの実行ではなく、Githubのレポジトリに対する作業になります。また開発環境/本番環境へのデプロイはすべてGithubのレポジトリに対する作業になり、Terraformモジュールの実行はありません。
+以下の順番で実行します。delivery環境構築の`ネットワーク`は自身の環境に合わせて実行要否を判断してください。delivery環境構築では`Githubリポジトリの準備`のみTerraformモジュールの実行ではなく、Githubのリポジトリに対する作業になります。また開発環境/本番環境へのデプロイはすべてGithubのリポジトリに対する作業になり、Terraformモジュールの実行はありません。
 
 - delivery環境構築
   - tfバックエンド
   - ネットワーク（任意）
-  - Githubレポジトリの準備
+  - Githubリポジトリの準備
   - Github Runner
 - 開発環境へのデプロイ
   - Githubへのソース配置
@@ -16,7 +16,7 @@
   - プルリクエスト作成
   - プルリクエストマージ
 
-まずは本レポジトリを任意の場所でクローンしてください。なお、以降の手順では任意のディレクトリのパスを`$CLONEDIR`環境変数として進めます。
+まずは本リポジトリを任意の場所でクローンしてください。なお、以降の手順では任意のディレクトリのパスを`$CLONEDIR`環境変数として進めます。
 
 ``` sh
 export CLONEDIR=`pwd`
@@ -58,7 +58,7 @@ find ./ -type f -exec grep -l 'OWNER' {} \; | xargs sed -i "" -e 's:OWNER:nobody
 ### tfバックエンド
 
 Terraformのtfstateを保存するバックエンドを作成します。ここでは`delivery`、`dev`、`production`の3つのバックエンドが作成されます。  
-`delivery`以外はレポジトリで使用するブランチ名になります。変更したい場合は`tf-backend.tf`の`env_names`の値を修正してください。  
+`delivery`以外はリポジトリで使用するブランチ名になります。変更したい場合は`tf-backend.tf`の`env_names`の値を修正してください。  
 
 tfバックエンドモジュールのディレクトリへ移動します。
 
@@ -105,24 +105,24 @@ terraform apply
 ![](../images/use-network.png)
 
 
-### Githubレポジトリの準備
-Githubにログインし、レポジトリを作成します。なお、Githubへのサインアップは済んでいるものとします。  
-- メニューバー右の[+マーク] - [New repository]をクリックし、新規レポジトリ作成画面に移動します。
-- 新規レポジトリ作成画面では以下を入力し、[Create repository]をクリックしてください。
-  - レポジトリ名
-  - レポジトリのVisiblity Private
+### Githubリポジトリの準備
+Githubにログインし、リポジトリを作成します。なお、Githubへのサインアップは済んでいるものとします。  
+- メニューバー右の[+マーク] - [New repository]をクリックし、新規リポジトリ作成画面に移動します。
+- 新規リポジトリ作成画面では以下を入力し、[Create repository]をクリックしてください。
+  - リポジトリ名
+  - リポジトリのVisiblity Private
 
-特にVisiblityは必ず`Private`を選択してください。このレポジトリにプッシュされた内容は自動でAWSにデプロイされてしまいます。またフォークされたレポジトリからプルリクエストを作成することで、アクセス可能な第三者がセルフホストランナーで任意のコードを実行することができてしまいます。[参考](https://docs.github.com/ja/actions/hosting-your-own-runners/about-self-hosted-runners#self-hosted-runner-security-with-public-repositories)  
+特にVisiblityは必ず`Private`を選択してください。このリポジトリにプッシュされた内容は自動でAWSにデプロイされてしまいます。またフォークされたリポジトリからプルリクエストを作成することで、アクセス可能な第三者がセルフホストランナーで任意のコードを実行することができてしまいます。[参考](https://docs.github.com/ja/actions/hosting-your-own-runners/about-self-hosted-runners#self-hosted-runner-security-with-public-repositories)  
 悪意のある第三者による不正を防ぐためにも必ず`Private`にしましょう。
 
-レポジトリ名を環境変数として登録しておきます。  
+リポジトリ名を環境変数として登録しておきます。  
 
 ``` sh
-export REPOSITORYNAME=<レポジトリ名>
+export REPOSITORYNAME=<リポジトリ名>
 ```
 
 TerraformのバックエンドとしてS3を使用するため、GithubのSecretsにAWSの認証情報を登録します。認証情報をコード内にハードコードしてしまうと、万が一Githubにプッシュしてしまった場合に情報漏洩に繋がるリスクがあるため、Secretsを利用してください。
-- レポジトリトップ画面から[Settings] - [Secrets] - [New repository secret]を順にクリックします。
+- リポジトリトップ画面から[Settings] - [Secrets] - [New repository secret]を順にクリックします。
 - 以下の2つのsecretを作成します。
 
 |Name|Value|
@@ -131,13 +131,13 @@ TerraformのバックエンドとしてS3を使用するため、GithubのSecret
 |AWS_SECRET_ACCESS_KEY|バックエンドを作成したユーザのAWSシークレットキー|
 
 セルフホストランナーに与えるトークンを確認します。
-- レポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner] - [Add runner]を順にクリックします。
+- リポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner] - [Add runner]を順にクリックします。
 - [Operatig System]を`Linux`に変更します。
 - [Download]コードブロック内で以下のようなコマンドを探します。
   - `curl -O -L https://github.com/actions/runner/releases/download/v2.277.1/actions-runner-linux-x64-2.277.1.tar.gz`
   - `Github runnerのバージョン`の値（例示コマンドにおける`2.277.1`の部分）を控えてください。次の手順で使用します。
 - [Configure]コードブロック内で以下のようなコマンドを探します。
-  - `./config.cmd --url https://github.com/<ユーザ名>/<レポジトリ名> --token <レジストレーショントークン>`
+  - `./config.cmd --url https://github.com/<ユーザ名>/<リポジトリ名> --token <レジストレーショントークン>`
   - `--url`の値と`--token`の値を控えてください。次の手順で使用します。
 
 
@@ -149,24 +149,24 @@ Github Runnerサーバモジュールのディレクトリへ移動します。
 cd $CLONEDIR/terraform-cicd/terraform/environment/$PJNAME/github-runner
 ```
 
-`github-runner.tf`を編集します。`region`と`locals`配下のパラメータを修正します。とくにec2_github_urlとec2_registration_tokenを`Githubレポジトリの準備`で確認した値に必ず修正してください。
+`github-runner.tf`を編集します。`region`と`locals`配下のパラメータを修正します。とくにec2_github_urlとec2_registration_tokenを`Githubリポジトリの準備`で確認した値に必ず修正してください。
 
 **Linuxの場合**
 
 ``` sh
 # ↓sedで置換する時、http:の`:`の前にエスケープを入れてください。例 https\://github.com
-sed -i -e 's:GITHUB-URL:<先ほどGithubレポジトリで確認したURL>:g' github-runner.tf 
-sed -i -e 's:REGIST-TOKEN:<先ほどGithubレポジトリで確認したレジストレーショントークン>:g' github-runner.tf
-sed -i -e 's:RUNNER-VERSION:<先ほどGithubレポジトリで確認したGithub runnerのバージョン>:g' github-runner.tf
+sed -i -e 's:GITHUB-URL:<先ほどGithubリポジトリで確認したURL>:g' github-runner.tf 
+sed -i -e 's:REGIST-TOKEN:<先ほどGithubリポジトリで確認したレジストレーショントークン>:g' github-runner.tf
+sed -i -e 's:RUNNER-VERSION:<先ほどGithubリポジトリで確認したGithub runnerのバージョン>:g' github-runner.tf
 ```
 
 **macの場合**
 
 ``` sh
 # ↓sedで置換する時、http:の`:`の前にエスケープを入れてください。例 https\://github.com
-sed -i "" -e 's:GITHUB-URL:<先ほどGithubレポジトリで確認したURL>:g' github-runner.tf
-sed -i "" -e 's:REGIST-TOKEN:<先ほどGithubレポジトリで確認したレジストレーショントークン>:g' github-runner.tf
-sed -i "" -e 's:RUNNER-VERSION:<先ほどGithubレポジトリで確認したGithub runnerのバージョン>:g' github-runner.tf
+sed -i "" -e 's:GITHUB-URL:<先ほどGithubリポジトリで確認したURL>:g' github-runner.tf
+sed -i "" -e 's:REGIST-TOKEN:<先ほどGithubリポジトリで確認したレジストレーショントークン>:g' github-runner.tf
+sed -i "" -e 's:RUNNER-VERSION:<先ほどGithubリポジトリで確認したGithub runnerのバージョン>:g' github-runner.tf
 ```
 
 修正したら以下コマンドでリソースを作成します。
@@ -179,7 +179,7 @@ terraform apply
 
 上記実行が完了したらGithub側にRunnerが認識されているか確認します。
 
-- Githubにログインし、レポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner]を確認し、作成したRunnerが表示されていれば登録完了です。表示されるまでには少し時間がかかります。
+- Githubにログインし、リポジトリトップ画面から[Settings] - [Actions] - [Self-hosted runner]を確認し、作成したRunnerが表示されていれば登録完了です。表示されるまでには少し時間がかかります。
 
 **作成後のイメージ**
 
@@ -191,11 +191,11 @@ terraform apply
 
 ### Githubへのソース配置
 ここからはterraformを実行する手順ではありません。Githubやターミナルで実施する手順になります。    
-- `Githubレポジトリの準備`で作成したレポジトリをクローンし、`dev`ブランチに切り替え、そこにサンプルとなるTerraformコードをコピーします。
+- `Githubリポジトリの準備`で作成したリポジトリをクローンし、`dev`ブランチに切り替え、そこにサンプルとなるTerraformコードをコピーします。
 
 ``` sh
 cd $CLONEDIR
-git clone <GithubレポジトリのクローンURL>
+git clone <GithubリポジトリのクローンURL>
 # クローン時にID/パスワードが求められたらGithubのユーザでログイン
 cd $REPOSITORYNAME
 git checkout -b dev
@@ -227,7 +227,7 @@ git commit -m "init"
 git push --set-upstream origin dev:dev
 ```
 
-レポジトリルートに`.github/workflows/terraform-ci-dev.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
+リポジトリルートに`.github/workflows/terraform-ci-dev.yml`が配置されていることで、プルリクエストの作成/更新をトリガにGithubActionsが動作します。  
 また`.github/workflows/terraform-cd-dev.yml`が配置されていることで、プルリクエストのマージをトリガにGithubActionsが動作します。  
 
 |ファイル|トリガ|GithubActionsで実行される処理|
@@ -238,7 +238,7 @@ git push --set-upstream origin dev:dev
 |terraform-cd-production.yml|プルリクエストマージ|本番環境へterraform apply実行|
 
 また、本番環境のための`production`ブランチを作成しておきます。  
-- Githubにログインし、レポジトリトップ画面から[ブランチマーク dev]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[ブランチマーク dev]をクリックします。
 - [Find or create a branch...]に`production`と入力して、[Create branch: production from dev]をクリックします。
 
 ### プルリクエスト作成/更新
@@ -263,14 +263,14 @@ git push --set-upstream origin feature:feature
 ```
 
 Githubでマージ先：`dev`、マージ元：`feature`としてプルリクエストを作成します。
-- Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
+- Githubにログインし、リポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
 - `base: dev`、`compare: feature`を指定し、[Create pull request]をクリックします。
 - 遷移先でプルリクエストのタイトルを入力します。任意のタイトルで構いません。その後[Create pull request]をクリックします。
 
 GithubActionsが動作し、`terraform plan`は成功するもののポリシーチェックに失敗しているのを確認します。
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、ポリシーチェックに失敗しています。動作していない場合はしばらく待ってみてください。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
 
 `feature`ブランチでデプロイ内容の変更を行います。今度はポリシーチェックに成功するように変更します。
 ``` sh
@@ -282,9 +282,9 @@ git push
 ```
 
 GithubActionsが動作し、`terraform plan`とポリシーチェックに成功しているのを確認します。
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform plan`とポリシーチェックに成功しています。動作していない場合はしばらく待ってみてください。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
 
 ### プルリクエストマージ
   
@@ -293,12 +293,12 @@ GithubActionsが動作し、`terraform plan`とポリシーチェックに成功
 - **`terraform apply`の結果をプルリクエストのコメントへ転記**
 
 プルリクエストにコメントされた`terraform plan`とポリシーチェックの内容で相違なければ、`feature`ブランチをマージします。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
 
 GithubActionsが動作し、`terraform apply`に成功しているのを確認します。
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
 Terraform経由でAWSにデプロイされていることを確認します。  
 - AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）
@@ -377,26 +377,26 @@ natgw_count = 2
 開発環境と同じようにGithubでプルリクエストを作成し、GithubActionsを動作させてみます。  
 
 Githubでマージ先：`production`、マージ元：`dev`としてプルリクエストを作成します。
-- Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
+- Githubにログインし、リポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
 - `base: production`、`compare: dev`を指定し、[Create pull request]をクリックします。
 - 遷移先でプルリクエストのタイトルを入力します。任意のタイトルで構いません。その後[Create pull request]をクリックします。
 
 GithubActionsが動作し、`terraform plan`とポリシーチェックに成功しているのを確認します。
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform plan`とポリシーチェックに成功しています。動作していない場合はしばらく待ってみてください。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform plan`の結果とポリシーチェックの結果がコメントされています。
 
 ### プルリクエストマージ
   
 開発環境と同じようにプルリクエストをマージし、GithubActionsを動作させてみます。
 
 プルリクエストにコメントされた`terraform plan`とポリシーチェックの内容で相違なければ、`dev`ブランチをマージします。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
 
 GithubActionsが動作し、`terraform apply`に成功しているのを確認します。
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
 Terraform経由でAWSにデプロイされていることを確認します。  
 - AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）
@@ -558,17 +558,17 @@ git push
 
 #### プルリクエスト作成・マージ
 Githubでマージ先：`dev`、マージ元：`feature`としてプルリクエストを作成します。
-- Githubにログインし、レポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
+- Githubにログインし、リポジトリトップ画面から[Pull request] - [New pull request]を順にクリックします。
 - `base: dev`、`compare: feature`を指定し、[Create pull request]をクリックします。
 - 遷移先でプルリクエストのタイトルを入力します。任意のタイトルで構いません。その後[Create pull request]をクリックします。
 
 プルリクエストをマージし、GithubActionsを動作させてみます。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。下部の[Merge pull request]をクリックします。
 
 GithubActionsが動作し、`terraform apply`に成功しているのを確認します。
-- Githubにログインし、レポジトリトップ画面から[Actions]をクリックします。
+- Githubにログインし、リポジトリトップ画面から[Actions]をクリックします。
 - 先ほど作成したプルリクエスト名でActionsが動作し、`terraform apply`に成功しています。動作していない場合はしばらく待ってみてください。
-- レポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
+- リポジトリトップ画面から[Pull request]をクリックし、先ほど作成したプルリクエストを表示します。`terraform apply`の結果がコメントされています。
 
 Terraform経由でAWSの開発環境が削除されていることを確認します。  
 - AWSマネジメントコンソールへアクセスし、Terraformを実行したリージョンへ移動します。（資料と同様の手順を行った方は`us-east-2`、オハイオリージョン）
@@ -576,7 +576,7 @@ Terraform経由でAWSの開発環境が削除されていることを確認し�
 - VPCサービスを開き、開発環境用のVPCが削除されていることを確認します。
 
 マージ先：`production`、マージ元：`dev`として再度[プルリクエスト作成・マージ](#プルリクエスト作成マージ)を行います。開発環境と記載されている箇所は本番環境と読み替えて実行してください。  
-これにより開発環境、本番環境共にコメントアウトされたTerraformコードがレポジトリに存在し、かつ各環境はTerraformコードを反映し、リソースが削除されています。
+これにより開発環境、本番環境共にコメントアウトされたTerraformコードがリポジトリに存在し、かつ各環境はTerraformコードを反映し、リソースが削除されています。
 
 ### Github runnerの削除
 
@@ -613,8 +613,8 @@ rm -rf $CLONEDIR/terraform/environment/$PJNAME
 rm -rf $CLONEDIR/$REPOSITORYNAME
 ```
 
-### Githubレポジトリの削除
+### Githubリポジトリの削除
 
-Githubのレポジトリを削除します。  
-- Githubにログインし、レポジトリトップ画面から[Settings]をクリックします。
-- ページ下部[Danger Zone] - [Delete this repository]をクリックし、表示される指示に従いレポジトリを削除してください。
+Githubのリポジトリを削除します。  
+- Githubにログインし、リポジトリトップ画面から[Settings]をクリックします。
+- ページ下部[Danger Zone] - [Delete this repository]をクリックし、表示される指示に従いリポジトリを削除してください。
