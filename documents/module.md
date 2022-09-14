@@ -25,7 +25,7 @@
 
 ### Github Runner
 
-`Github Runner`はGithub Actionsによるパイプライン処理を実行するGithub Runnerサーバを構築するモジュールです。AMIは最新のAmazon Linuxを使用します。接続するGithubレポジトリと認証用のトークンを設定し、Runnerのセットアップを行います。このセットアップはUserdataにより自動で行います。また、以下の追加機能を任意で設定できます。追加機能はデフォルトでは`無効`にしています。
+`Github Runner`はGithub Actionsによるパイプライン処理を実行するGithub Runnerサーバを構築するモジュールです。AMIは最新のAmazon Linuxを使用します。接続するGithubリポジトリと認証用のトークンを設定し、Runnerのセットアップを行います。このセットアップはUserdataにより自動で行います。また、以下の追加機能を任意で設定できます。追加機能はデフォルトでは`無効`にしています。
 
 |機能|説明|
 |-|-|
