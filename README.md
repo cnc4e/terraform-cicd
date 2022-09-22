@@ -14,7 +14,7 @@
 
 **CICDフロー図**
 
-![CICDフロー図](./images/cicd-all.png)
+![CICDフロー図](./images/cicd-all.svg)
 
 # バージョン
 

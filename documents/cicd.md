@@ -9,14 +9,14 @@
 
 本リポジトリで構成するCICDについて解説します。全体の流れは以下の通りです。  
 
-![全体図](./../images/cicd-all.png)
+![全体図](./../images/cicd-all.svg)
 
 Githubにデプロイ対象のTerraformコードを用意します。プルリクエスト作成/更新によってフォーマットチェックやポリシーチェックを行ういわゆる`CI`の部分が動作し、プルリクエストマージによって実際にTerraformを実行してデプロイするいわゆる`CD`の部分が動作します。どちらもGithubActionsを使用しています。なお今回のCICDフローでは[Gitlab flow]()に則り、`feature`、`dev`、`production`の3つのブランチが登場します。  
 
 GithubActionsへの指示は`.github/workflows/terraform-*.yml`で行います。ファイル内容を確認しながら本資料を読み進めると理解しやすいかもしれません。
 
 ## プルリクエスト作成/更新
-![CI図](./../images/cicd-ci.png)
+![CI図](./../images/cicd-ci.svg)
 
 Githubにリポジトリが存在する状態とします。プルリクエストを作成すると、GithubActionsが動作し、以下のジョブが実行されます。CI部分の実行結果はプルリクエストのコメントに出力されるため、コメントをレビューして相違なければマージに進むことになります。  
 - terraformコマンド実行
@@ -49,7 +49,7 @@ OPA（Open Policy Agent）を使用してポリシーチェックを行います
 ポリシーファイルは`policy/`配下にあります。ポリシーはregoという言語で書きます。rego言語の書き方については[公式](https://www.openpolicyagent.org/docs/latest/policy-language/#the-basics)を参照してください。  
 
 ## プルリクエストマージ
-![CD図](./../images/cicd-cd.png)
+![CD図](./../images/cicd-cd.svg)
 
 プルリクエストをマージすると、GithubActionsが動作し、以下のジョブが実行されます。CD部分の実行結果はプルリクエストのコメントに出力されます。
 - terraformコマンド実行
